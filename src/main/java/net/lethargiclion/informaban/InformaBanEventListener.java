@@ -17,6 +17,9 @@ package net.lethargiclion.informaban;
     along with InformaBan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.util.Random;
+
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 
 import org.bukkit.event.EventHandler;
@@ -28,21 +31,33 @@ public class InformaBanEventListener implements Listener {
 
 	@SuppressWarnings("unused")
     private InformaBan plugin;
+	
+	private Random r;
 
 	public InformaBanEventListener(InformaBan plugin) {
 		this.plugin = plugin;
+		r = new Random(); // for testing
 	}
 
-	// This is just one possible event you can hook.
-	// See http://jd.bukkit.org/apidocs/ for a full event list.
-
-	// All event handlers must be marked with the @EventHandler annotation 
-	// The method name does not matter, only the type of the event parameter
-	// is used to distinguish what is handled.
 
 	@EventHandler
 	public void onPlayerLogin(PlayerLoginEvent event) {
-		event.setKickMessage(String.format("%sYou were banned by %s%s\nReason: %s%s", ChatColor.AQUA, ChatColor.GOLD, "Example", ChatColor.ITALIC, "Reason"));
+	    //Example ban code (for now just testing message formatting)
+	    
+	    String[] message = new String[3];
+	    
+	    String serverName = "this server";
+	    String banReason = "Example reason";
+	    String bannedBy = "Admin";
+	    boolean tempban = r.nextBoolean();
+	    String banExpiry = "3 hours, 14 minutes";
+	    
+		message[0] = String.format(" %sYou are %sbanned from %s!", ChatColor.GOLD, tempban?"":"PERMANENTLY ", serverName);
+		message[1] = String.format("     Reason: %s%s%s", ChatColor.GRAY, ChatColor.ITALIC, banReason);
+		message[2] = String.format("       %sYour ban (placed by %s%s%s) %s.", ChatColor.GRAY, ChatColor.WHITE, bannedBy, ChatColor.GRAY,
+		        tempban ? ("expires in "+banExpiry) : "will not expire");
+		
+		event.setKickMessage(StringUtils.join(message, '\n'));
 		event.setResult(Result.KICK_BANNED);
 	}
 }

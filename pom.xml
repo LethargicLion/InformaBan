@@ -55,8 +55,8 @@
 		<url>http://lethargiclion.net/</url>
 	</organization>
 	<issueManagement>
-		<system>BukkitDev</system>
-		<url>http://dev.bukkit.org/server-mods/informaban/tickets/</url>
+		<system>GitHub</system>
+		<url>https://github.com/LethargicLion/InformaBan/issues</url>
 	</issueManagement>
 	<inceptionYear>2012-09-13</inceptionYear>
 	<url>http://dev.bukkit.org/server-mods/informaban/</url>
