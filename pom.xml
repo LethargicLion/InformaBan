@@ -69,4 +69,8 @@
 	</issueManagement>
 	<inceptionYear>2012-09-13</inceptionYear>
 	<url>http://dev.bukkit.org/server-mods/informaban/</url>
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>http://ci.lethargiclion.net/job/InformaBan/</url>
+	</ciManagement>
 </project>
