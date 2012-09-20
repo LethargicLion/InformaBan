@@ -13,7 +13,7 @@ commands:
         description: Bans a player from the server.
         usage: /ban <player> <time> <reason>
     kick:
-        description: Kicks a user from the server.
+        description: Kicks a player from the server.
         usage: /kick <player> <reason>
     rap:
         description: Displays a user's "rap sheet", showing their kick/ban history.

@@ -43,7 +43,8 @@ public class InformaBan extends JavaPlugin {
 	    
 	    // Until we get the user's preferred locale from the config file,
 	    // use the environmental locale which should be a sensible default.
-	    setupLocale(Locale.getDefault());
+	    //setupLocale(Locale.getDefault());
+	    setupLocale(new Locale("en", "PI")); // English (Pirate) for testing
 	    
 	}
 	
@@ -56,7 +57,7 @@ public class InformaBan extends JavaPlugin {
 		// add any code you want to be executed when your plugin is disabled
 	    Logger log = this.getLogger();
 	    
-	    MessageFormat disableSuccess = new MessageFormat(messages.getString("pluginDisableSuccess"), locale);
+	    MessageFormat disableSuccess = new MessageFormat(messages.getString("plugin.disable.success"), locale);
 	    log.info(disableSuccess.format(new Object[]{this.getName()}));
 	}
 
@@ -66,26 +67,42 @@ public class InformaBan extends JavaPlugin {
 
 		PluginManager pm = this.getServer().getPluginManager();
 		
-		MessageFormat msgFailed = new MessageFormat(messages.getString("commandRegistrationFailed"), locale);
+		MessageFormat msgFailed = new MessageFormat(messages.getString("plugin.enable.commandFailure"), locale);
 
 		PluginCommand ib = getCommand("ib"); 
-		if(ib != null)
+		if(ib != null) {
 		    ib.setExecutor(commandExecutor);
+		    // Override the default description and usage from plugin.yml with localized versions
+		    ib.setDescription(messages.getString("command.ib.description"));
+		    ib.setUsage(messages.getString("command.ib.usage"));
+		}
 		else {
 		    log.severe(msgFailed.format(new Object[]{"/ib"}));
 		    pm.disablePlugin(this);
 		}
 		
 		PluginCommand kick = getCommand("kick");
-		if(kick != null)  kick.setExecutor(commandExecutor);
+		if(kick != null) {
+		    kick.setExecutor(commandExecutor);
+		    kick.setDescription(messages.getString("command.kick.description"));
+		    kick.setUsage(messages.getString("command.kick.usage"));
+		}
 	    else log.warning(msgFailed.format(new Object[]{"/kick"}));
 		
         PluginCommand ban = getCommand("ban");
-        if(ban != null)  ban.setExecutor(commandExecutor);
+        if(ban != null) {
+            ban.setExecutor(commandExecutor);
+            ban.setDescription(messages.getString("command.ban.description"));
+            ban.setUsage(messages.getString("command.ban.usage"));
+        }
         else log.warning(msgFailed.format(new Object[]{"/ban"}));
         
         PluginCommand rap = getCommand("rap");
-        if(rap != null)  rap.setExecutor(commandExecutor);
+        if(rap != null) {
+            rap.setExecutor(commandExecutor);
+            rap.setDescription(messages.getString("command.rap.description"));
+            rap.setUsage(messages.getString("command.rap.usage"));
+        }
         else log.warning(msgFailed.format(new Object[]{"/rap"}));
 
 
@@ -94,7 +111,7 @@ public class InformaBan extends JavaPlugin {
 		pm.registerEvents(eventListener, this);
 
 		// do any other initialisation you need here...
-		MessageFormat enableSuccess = new MessageFormat(messages.getString("pluginEnableSuccess"), locale);
+		MessageFormat enableSuccess = new MessageFormat(messages.getString("plugin.enable.success"), locale);
 		log.info(enableSuccess.format(new Object[]{this.getName()}));
 	}
 }

@@ -17,6 +17,7 @@ package net.lethargiclion.informaban;
     along with InformaBan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.text.MessageFormat;
 import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
@@ -42,7 +43,7 @@ public class InformaBanCommandExecutor implements CommandExecutor {
     }
     
     private boolean commandKick(CommandSender sender, String[] args ) {
-        if(args.length == 1) sender.sendMessage("You must provide a reason.");
+        if(args.length == 1) sender.sendMessage(plugin.messages.getString("command.kick.reasonRequired"));
         if(args.length > 1) {
             Player victim = sender.getServer().getPlayer(args[1]);
             if(victim != null) {
@@ -54,9 +55,10 @@ public class InformaBanCommandExecutor implements CommandExecutor {
                 message[1] = String.format("     Reason: %s%s%s", ChatColor.GRAY, ChatColor.ITALIC, banReason);
                 
                 victim.kickPlayer(StringUtils.join(message, '\n'));
-                plugin.getLogger().info(String.format("%s kicked %s from the server.", sender.getName(), args[1]));
+                
+                plugin.getLogger().info(new MessageFormat(plugin.messages.getString("command.kick.consoleLog"), plugin.locale).format(new Object[]{sender.getName(), victim.getName()}));
             }
-            else sender.sendMessage("Could not find that player.");
+            else sender.sendMessage(plugin.messages.getString("error.playerNotFound"));
             return true;
         }
         return false;
