@@ -17,6 +17,9 @@ package net.lethargiclion.informaban;
     along with InformaBan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.text.MessageFormat;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 import org.bukkit.command.PluginCommand;
@@ -24,45 +27,66 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class InformaBan extends JavaPlugin {
-    
-public static Logger log;
 
 	//ClassListeners
 	private final InformaBanCommandExecutor commandExecutor = new InformaBanCommandExecutor(this);
 	private final InformaBanEventListener eventListener = new InformaBanEventListener(this);
 	//ClassListeners
 	
+	// Locale
+	Locale locale;
+	
+	// Localised messages
+	ResourceBundle messages;
+	
 	public InformaBan() {
-	    log = org.bukkit.Bukkit.getLogger();
+	    
+	    // Until we get the user's preferred locale from the config file,
+	    // use the environmental locale which should be a sensible default.
+	    setupLocale(Locale.getDefault());
+	    
 	}
+	
+	public void setupLocale(Locale l) {
+	    locale = l;
+	    messages = ResourceBundle.getBundle("Messages", l);
+    }
 
 	public void onDisable() {
 		// add any code you want to be executed when your plugin is disabled
+	    Logger log = this.getLogger();
+	    
+	    MessageFormat disableSuccess = new MessageFormat(messages.getString("pluginDisableSuccess"), locale);
+	    log.info(disableSuccess.format(new Object[]{this.getName()}));
 	}
 
-	public void onEnable() { 
+	public void onEnable() {
+	    
+	    Logger log = this.getLogger();
 
 		PluginManager pm = this.getServer().getPluginManager();
+		
+		MessageFormat msgFailed = new MessageFormat(messages.getString("commandRegistrationFailed"), locale);
 
 		PluginCommand ib = getCommand("ib"); 
 		if(ib != null)
 		    ib.setExecutor(commandExecutor);
 		else {
-		    log.severe("Failed to hook /ib command - this shouldn't happen! InformaBan cannot continue..");
+		    log.severe(msgFailed.format(new Object[]{"/ib"}));
 		    pm.disablePlugin(this);
 		}
 		
 		PluginCommand kick = getCommand("kick");
 		if(kick != null)  kick.setExecutor(commandExecutor);
-	    else log.warning("Failed to register /kick command - is another plugin overriding it?");
+	    else log.warning(msgFailed.format(new Object[]{"/kick"}));
 		
         PluginCommand ban = getCommand("ban");
         if(ban != null)  ban.setExecutor(commandExecutor);
-        else log.warning("Failed to register /ban command - is another plugin overriding it?");
+        else log.warning(msgFailed.format(new Object[]{"/ban"}));
         
         PluginCommand rap = getCommand("rap");
         if(rap != null)  rap.setExecutor(commandExecutor);
-        else log.warning("Failed to register /rap command - is another plugin overriding it?");
+        else log.warning(msgFailed.format(new Object[]{"/rap"}));
 
 
 		// you can register multiple classes to handle events if you want
@@ -70,5 +94,7 @@ public static Logger log;
 		pm.registerEvents(eventListener, this);
 
 		// do any other initialisation you need here...
+		MessageFormat enableSuccess = new MessageFormat(messages.getString("pluginEnableSuccess"), locale);
+		log.info(enableSuccess.format(new Object[]{this.getName()}));
 	}
 }
