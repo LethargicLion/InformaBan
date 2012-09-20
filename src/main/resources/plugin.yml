@@ -2,7 +2,19 @@ name: InformaBan
 main: net.lethargiclion.informaban.InformaBan
 version: 0.0.1-SNAPSHOT
 
+# Ask Bukkit to load our plugin before CommandBook or Essentials, to ensure our plugin registers its commands first.
+loadbefore: [CommandBook, Essentials]
+
 commands:
-   ib:
-      description: A Command
-      usage: /ib
+    ib:
+        description: Allows access to core InformaBan functions.
+        usage: /ib reload
+    ban:
+        description: Bans a player from the server.
+        usage: /ban <player> <time> <reason>
+    kick:
+        description: Kicks a user from the server.
+        usage: /kick <player> <reason>
+    rap:
+        description: Displays a user's "rap sheet", showing their kick/ban history.
+        usage: /rap <player>

@@ -17,15 +17,24 @@ package net.lethargiclion.informaban;
     along with InformaBan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.util.logging.Logger;
+
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class InformaBan extends JavaPlugin {
+    
+public static Logger log;
 
 	//ClassListeners
 	private final InformaBanCommandExecutor commandExecutor = new InformaBanCommandExecutor(this);
 	private final InformaBanEventListener eventListener = new InformaBanEventListener(this);
 	//ClassListeners
+	
+	public InformaBan() {
+	    log = org.bukkit.Bukkit.getLogger();
+	}
 
 	public void onDisable() {
 		// add any code you want to be executed when your plugin is disabled
@@ -35,7 +44,26 @@ public class InformaBan extends JavaPlugin {
 
 		PluginManager pm = this.getServer().getPluginManager();
 
-		getCommand("ib").setExecutor(commandExecutor);
+		PluginCommand ib = getCommand("ib"); 
+		if(ib != null)
+		    ib.setExecutor(commandExecutor);
+		else {
+		    log.severe("Failed to hook /ib command - this shouldn't happen! InformaBan cannot continue..");
+		    pm.disablePlugin(this);
+		}
+		
+		PluginCommand kick = getCommand("kick");
+		if(kick != null)  kick.setExecutor(commandExecutor);
+	    else log.warning("Failed to register /kick command - is another plugin overriding it?");
+		
+        PluginCommand ban = getCommand("ban");
+        if(ban != null)  ban.setExecutor(commandExecutor);
+        else log.warning("Failed to register /ban command - is another plugin overriding it?");
+        
+        PluginCommand rap = getCommand("rap");
+        if(rap != null)  rap.setExecutor(commandExecutor);
+        else log.warning("Failed to register /rap command - is another plugin overriding it?");
+
 
 		// you can register multiple classes to handle events if you want
 		// just call pm.registerEvents() on an instance of each class

@@ -17,9 +17,14 @@ package net.lethargiclion.informaban;
     along with InformaBan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.util.Arrays;
+
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class InformaBanCommandExecutor implements CommandExecutor {
 
@@ -31,11 +36,27 @@ public class InformaBanCommandExecutor implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        plugin.getLogger().info("onCommand Reached in informaban");
 
-        if (command.getName().equalsIgnoreCase("command")) {
-	    plugin.getLogger().info("command used");
-            //do something
+        if (command.getName().equalsIgnoreCase("kick")) return commandKick(sender, args);
+        return false;
+    }
+    
+    private boolean commandKick(CommandSender sender, String[] args ) {
+        if(args.length == 1) sender.sendMessage("You must provide a reason.");
+        if(args.length > 1) {
+            Player victim = sender.getServer().getPlayer(args[1]);
+            if(victim != null) {
+                // Set up kick message
+                String banReason = StringUtils.join(Arrays.copyOfRange(args, 2, args.length), ' ');
+                String[] message = new String[3];
+                // Construct kick message
+                message[0] = String.format(" %sYou were kicked by %s", ChatColor.GOLD, sender.getName());
+                message[1] = String.format("     Reason: %s%s%s", ChatColor.GRAY, ChatColor.ITALIC, banReason);
+                
+                victim.kickPlayer(StringUtils.join(message, '\n'));
+                plugin.getLogger().info(String.format("%s kicked %s from the server.", sender.getName(), args[1]));
+            }
+            else sender.sendMessage("Could not find that player.");
             return true;
         }
         return false;
