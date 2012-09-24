@@ -43,8 +43,8 @@ public class InformaBan extends JavaPlugin {
 	    
 	    // Until we get the user's preferred locale from the config file,
 	    // use the environmental locale which should be a sensible default.
-	    //setupLocale(Locale.getDefault());
-	    setupLocale(new Locale("en", "PI")); // English (Pirate) for testing
+	    setupLocale(Locale.getDefault());
+	    //setupLocale(new Locale("en", "PI")); // English (Pirate) for testing
 	    
 	}
 	
