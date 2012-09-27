@@ -51,13 +51,13 @@ public class InformaBanCommandExecutor implements CommandExecutor {
                 String banReason = StringUtils.join(Arrays.copyOfRange(args, 2, args.length), ' ');
                 String[] message = new String[3];
                 // Construct kick message
-                String kickMsg = new MessageFormat(plugin.messages.getString("banmsg.kickedby"), plugin.locale).format(new Object[]{sender.getName()});
+                String kickMsg = new MessageFormat(plugin.messages.getString("banmsg.kickedby"), InformaBan.getLocale()).format(new Object[]{sender.getName()});
                 message[0] = String.format(" %s%s", ChatColor.GOLD, kickMsg);
                 message[1] = String.format("     %s: %s%s%s", plugin.messages.getString("banmsg.reason"), ChatColor.GRAY, ChatColor.ITALIC, banReason);
                 
                 victim.kickPlayer(StringUtils.join(message, '\n'));
                 
-                plugin.getLogger().info(new MessageFormat(plugin.messages.getString("command.kick.consoleLog"), plugin.locale).format(new Object[]{sender.getName(), victim.getName()}));
+                plugin.getLogger().info(new MessageFormat(plugin.messages.getString("command.kick.consoleLog"), InformaBan.getLocale()).format(new Object[]{sender.getName(), victim.getName()}));
             }
             else sender.sendMessage(plugin.messages.getString("error.playerNotFound"));
             return true;

@@ -34,7 +34,7 @@ public class InformaBan extends JavaPlugin {
 	//ClassListeners
 	
 	// Locale
-	Locale locale;
+	private static Locale locale;
 	
 	// Localised messages
 	ResourceBundle messages;
@@ -43,12 +43,16 @@ public class InformaBan extends JavaPlugin {
 	    
 	    // Until we get the user's preferred locale from the config file,
 	    // use the environmental locale which should be a sensible default.
-	    setupLocale(Locale.getDefault());
+	    setLocale(Locale.getDefault());
 	    //setupLocale(new Locale("en", "PI")); // English (Pirate) for testing
 	    
 	}
 	
-	public void setupLocale(Locale l) {
+	public static Locale getLocale() {
+	    return locale;
+	}
+	
+	public void setLocale(Locale l) {
 	    locale = l;
 	    messages = ResourceBundle.getBundle("Messages", l);
     }
