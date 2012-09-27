@@ -81,4 +81,10 @@ public interface Database {
      */
     public boolean isJailed(Player subject);
     
+    /**
+     * Deactivate an Enforcement, usually used when a player is unbanned.
+     * @param e
+     * @return
+     */
+    public boolean deactivate(Enforcement e);
 }

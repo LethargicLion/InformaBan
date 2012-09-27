@@ -51,4 +51,10 @@ public class SQLiteDB implements Database {
         return false;
     }
 
+    @Override
+    public boolean deactivate(Enforcement e) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
 }
