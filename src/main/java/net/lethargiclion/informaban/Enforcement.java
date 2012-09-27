@@ -6,7 +6,6 @@ import java.util.Date;
 
 import org.bukkit.entity.Player;
 
-import net.lethargiclion.informaban.persistence.Database;
 import net.lethargiclion.informaban.persistence.Database.RecordType;
 
 /**
@@ -152,13 +151,14 @@ public abstract class Enforcement {
     /**
      * Enforces this event upon the subject.
      */
-    protected void enforce(Player subject, Player enforcer, String reason) {
-        if(dateIssued != null) throw new IllegalStateException("This event has already been enforced!");
+    protected boolean enforce(Player subject, Player enforcer, String reason) {
+        if(dateIssued != null) return false;
         dateIssued = new Date();
         this.subject = subject.getName();
         this.subjectIP = subject.getAddress().getAddress();
         this.enforcer = enforcer.getName();
         this.reason = reason;
+        return true;
     }
     
 }

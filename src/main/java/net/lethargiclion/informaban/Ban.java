@@ -1,11 +1,7 @@
 package net.lethargiclion.informaban;
 
 import java.net.UnknownHostException;
-import java.text.MessageFormat;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.ResourceBundle;
-
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -23,11 +19,19 @@ public class Ban extends TimedEnforcement {
         super(RecordType.BAN, subject, subjectIP, issuer, reason, when, duration);
     }
     
-    public void enforce(Player subject, Player enforcer, String reason, int duration) 
+    /**
+     * Enforce this ban.
+     * 
+     * Note that this performs the initial enforcement of the ban, e.g. when the ban was initially placed.
+     * @return true if successfully enforced; false if the ban has already been enforced.
+     */
+    public boolean enforce(Player subject, Player enforcer, String reason, int duration) 
     {
+        if(this.getDateIssued() != null) return false;
+        
         super.enforce(subject, enforcer, reason, duration);
         
-        ResourceBundle messages = ResourceBundle.getBundle("Messages", InformaBan.getLocale());
+        //ResourceBundle messages = ResourceBundle.getBundle("Messages", InformaBan.getLocale());
         
         String[] message = new String[3];
         
@@ -39,6 +43,24 @@ public class Ban extends TimedEnforcement {
                 duration!=0 ? (String.format("expire in %d seconds", duration)) : "NOT expire");
         
         subject.kickPlayer(StringUtils.join(message, '\n'));
+        return true;
+    }
+    
+    /**
+     * Fetches the string that should be used as the kick message if the subject of this ban attempts to log in.
+     * @return
+     */
+    public String getBanMessage() {
+        String[] message = new String[3];
+        String serverName = "this server";
+        
+        message[0] = String.format(" %sYou are %sbanned from %s!", ChatColor.GOLD, getDuration()!=0?"":"PERMANENTLY ", serverName);
+        message[1] = String.format("     Reason: %s%s%s", ChatColor.GRAY, ChatColor.ITALIC, this.getReason());
+        message[2] = String.format("       %sYour ban (placed by %s%s%s) will %s.", ChatColor.GRAY, ChatColor.WHITE, this.getEnforcer(), ChatColor.GRAY,
+                getDuration()!=0 ? String.format("expire in %d seconds", getDuration()) : "NOT expire");
+        
+        return StringUtils.join(message, '\n');
+        
     }
 
 }

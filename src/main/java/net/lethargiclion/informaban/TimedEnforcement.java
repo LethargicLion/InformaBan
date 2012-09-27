@@ -24,10 +24,11 @@ public class TimedEnforcement extends Enforcement {
         setDuration(duration);
     }
 
-    protected void enforce(Player subject, Player enforcer, String reason, int duration) 
+    protected boolean enforce(Player subject, Player enforcer, String reason, int duration) 
     {
-        super.enforce(subject, enforcer, reason);
+        if(!super.enforce(subject, enforcer, reason)) return false;
         setDuration(duration);
+        return true;
     }
     
     public boolean isActive() {
