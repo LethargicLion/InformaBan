@@ -1,4 +1,4 @@
-package net.lethargiclion.informaban;
+package net.lethargiclion.informaban.enforcement;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
