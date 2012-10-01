@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.bukkit.entity.Player;
 
-import net.lethargiclion.informaban.Enforcement;
+import net.lethargiclion.informaban.enforcement.Enforcement;
 
 public interface Database {
     

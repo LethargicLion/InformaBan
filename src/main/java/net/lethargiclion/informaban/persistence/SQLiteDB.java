@@ -3,7 +3,7 @@ package net.lethargiclion.informaban.persistence;
 import java.net.InetAddress;
 import java.util.List;
 
-import net.lethargiclion.informaban.Enforcement;
+import net.lethargiclion.informaban.enforcement.Enforcement;
 
 import org.bukkit.entity.Player;
 
