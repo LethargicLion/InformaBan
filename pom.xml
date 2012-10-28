@@ -13,9 +13,7 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>RELEASE</version>
-			<type>jar</type>
-			<scope>compile</scope>
+			<version>1.4.2-R0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
