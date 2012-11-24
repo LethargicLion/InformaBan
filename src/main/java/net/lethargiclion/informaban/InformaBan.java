@@ -18,9 +18,13 @@ package net.lethargiclion.informaban;
  */
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
+
+import javax.persistence.PersistenceException;
 
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.PluginManager;
@@ -48,10 +52,18 @@ public class InformaBan extends JavaPlugin {
 	    
 	}
 	
+	/**
+	 * STatic method to return this plugin's current locale.
+	 * @return
+	 */
 	public static Locale getLocale() {
 	    return locale;
 	}
 	
+	/**
+	 * Sets the locale for this plugin, and loads the messages for it.
+	 * @param l
+	 */
 	public void setLocale(Locale l) {
 	    locale = l;
 	    messages = ResourceBundle.getBundle("Messages", l);
@@ -113,9 +125,34 @@ public class InformaBan extends JavaPlugin {
 		// you can register multiple classes to handle events if you want
 		// just call pm.registerEvents() on an instance of each class
 		pm.registerEvents(eventListener, this);
+		
+		// Set up database
+		initDatabase();
 
 		// do any other initialisation you need here...
 		MessageFormat enableSuccess = new MessageFormat(messages.getString("plugin.enable.success"), locale);
 		log.info(enableSuccess.format(new Object[]{this.getName()}));
 	}
+
+    private void initDatabase() {
+        try {
+            getDatabase().find(net.lethargiclion.informaban.persistence.Event.class).findRowCount();
+        } catch(PersistenceException ex) {
+            this.getLogger().info(messages.getString("plugin.enable.database"));
+            
+            // Set up tables and stuff
+            installDDL();
+        }
+        
+    }
+    
+    /**
+     * Return a list of the database classes (beans) implemented by this plugin.
+     */
+    @Override
+    public List<Class<?>> getDatabaseClasses() {
+        List<Class<?>> list = new ArrayList<Class<?>>();
+        list.add(net.lethargiclion.informaban.persistence.Event.class);
+        return list;
+    }
 }

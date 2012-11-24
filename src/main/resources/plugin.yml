@@ -1,13 +1,16 @@
-name: InformaBan
-main: net.lethargiclion.informaban.InformaBan
-version: 0.0.1-SNAPSHOT
+name: ${project.name}
+main: ${main.class}
+version: ${project.version}
+description: ${project.name} is a Bukkit plugin aiming to provide a kick/ban system that sensibly tracks and displays a player's kick and ban history.
 
 # Ask Bukkit to load our plugin before CommandBook or Essentials, to ensure our plugin registers its commands first.
 loadbefore: [CommandBook, Essentials]
 
+database: true
+
 commands:
     ib:
-        description: Allows access to core InformaBan functions.
+        description: Allows access to core ${project.name} functions.
         usage: /ib reload
     ban:
         description: Bans a player from the server.

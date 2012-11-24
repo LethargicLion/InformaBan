@@ -8,6 +8,7 @@
 	<name>InformaBan</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<main.class>net.lethargiclion.informaban.InformaBan</main.class>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -28,6 +29,12 @@
 		</dependency>
 	</dependencies>
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

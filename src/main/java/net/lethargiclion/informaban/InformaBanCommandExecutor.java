@@ -19,6 +19,9 @@ package net.lethargiclion.informaban;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.Date;
+
+import net.lethargiclion.informaban.persistence.Event;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
@@ -58,6 +61,10 @@ public class InformaBanCommandExecutor implements CommandExecutor {
                 victim.kickPlayer(StringUtils.join(message, '\n'));
                 
                 plugin.getLogger().info(new MessageFormat(plugin.messages.getString("command.kick.consoleLog"), InformaBan.getLocale()).format(new Object[]{sender.getName(), victim.getName()}));
+                
+                // Now record it
+                Event e = new Event(new Date().getTime(), (byte) 0, victim.getName(), sender.getName(), banReason);
+                plugin.getDatabase().insert(e);
             }
             else sender.sendMessage(plugin.messages.getString("error.playerNotFound"));
             return true;
