@@ -2,19 +2,22 @@ package net.lethargiclion.informaban.enforcement;
 
 import java.net.UnknownHostException;
 import java.util.Date;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+@Entity()
+@Table(name="ib_events")
 public class Ban extends TimedEnforcement {
 
-    public Ban() {
-        super(RecordType.BAN);
-        // TODO Auto-generated constructor stub
-    }
+    public Ban() {}
     
     public Ban(String subject, String subjectIP, String issuer, String reason, Date when, int duration) throws UnknownHostException {
-        super(RecordType.BAN, subject, subjectIP, issuer, reason, when, duration);
+        super(subject, subjectIP, issuer, reason, when, duration);
     }
     
     /**

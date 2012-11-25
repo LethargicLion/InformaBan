@@ -21,6 +21,7 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Date;
 
+import net.lethargiclion.informaban.enforcement.Kick;
 import net.lethargiclion.informaban.persistence.Event;
 
 import org.apache.commons.lang.StringUtils;
@@ -52,19 +53,13 @@ public class InformaBanCommandExecutor implements CommandExecutor {
             if(victim != null) {
                 // Set up kick message
                 String banReason = StringUtils.join(Arrays.copyOfRange(args, 2, args.length), ' ');
-                String[] message = new String[3];
-                // Construct kick message
-                String kickMsg = new MessageFormat(plugin.messages.getString("banmsg.kickedby"), InformaBan.getLocale()).format(new Object[]{sender.getName()});
-                message[0] = String.format(" %s%s", ChatColor.GOLD, kickMsg);
-                message[1] = String.format("     %s: %s%s%s", plugin.messages.getString("banmsg.reason"), ChatColor.GRAY, ChatColor.ITALIC, banReason);
-                
-                victim.kickPlayer(StringUtils.join(message, '\n'));
-                
+
                 plugin.getLogger().info(new MessageFormat(plugin.messages.getString("command.kick.consoleLog"), InformaBan.getLocale()).format(new Object[]{sender.getName(), victim.getName()}));
                 
-                // Now record it
-                Event e = new Event(new Date().getTime(), (byte) 0, victim.getName(), sender.getName(), banReason);
-                plugin.getDatabase().insert(e);
+                // Do the kick and record it
+                Kick k = new Kick();
+                k.enforce(plugin.messages, victim, sender, banReason);
+                plugin.getDatabase().insert(k);
             }
             else sender.sendMessage(plugin.messages.getString("error.playerNotFound"));
             return true;

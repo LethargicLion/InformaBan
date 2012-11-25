@@ -3,26 +3,28 @@ package net.lethargiclion.informaban.enforcement;
 import java.net.UnknownHostException;
 import java.util.Date;
 
+import javax.persistence.MappedSuperclass;
+
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+@MappedSuperclass
 public abstract class TimedEnforcement extends Enforcement {
     
     private int duration;
     
     private boolean active;
     
-    protected TimedEnforcement(RecordType type) {
-        super(type);
+    protected TimedEnforcement() {
     }
 
-    protected TimedEnforcement(RecordType type, String subject,
-            String subjectIP, String issuer, String reason, Date when, int duration)
-            throws UnknownHostException {
-        super(type, subject, subjectIP, issuer, reason, when);
+    protected TimedEnforcement(String subject, String subjectIP, String issuer, String reason,
+            Date when, int duration) throws UnknownHostException {
+        super(subject, subjectIP, issuer, reason, when);
         setDuration(duration);
     }
 
-    protected boolean enforce(Player subject, Player enforcer, String reason, int duration) 
+    protected boolean enforce(Player subject, CommandSender enforcer, String reason, int duration) 
     {
         if(!super.enforce(subject, enforcer, reason)) return false;
         setDuration(duration);

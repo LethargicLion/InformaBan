@@ -3,13 +3,13 @@ package net.lethargiclion.informaban.enforcement;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
+import java.util.UUID;
 
-import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Table;
+import javax.persistence.MappedSuperclass;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
@@ -17,9 +17,8 @@ import org.bukkit.entity.Player;
  * @author TerrorBite
  *
  */
-@Entity()
-@Table(name="ib_events")
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+
+@MappedSuperclass
 public abstract class Enforcement {
     
     public enum RecordType {
@@ -50,13 +49,14 @@ public abstract class Enforcement {
     }
     
     /**
-     * The type of this record.
+     * A unique ID for this record (for the database)
      */
-    private RecordType type;
+    @Id
+    @GeneratedValue
+    UUID id = null;
     /**
      * The date and time that the recorded event occurred.
      */
-    @Id
     private Date dateIssued = null;
     /**
      * The name of the player who is the subject of the recorded event.
@@ -76,33 +76,17 @@ public abstract class Enforcement {
     private String reason = null;
     
     /**
-     * Creates a "blank" Enforcement of the given type.
+     * Creates a "blank" Enforcement with no type.
      */
-    protected Enforcement(RecordType type) {
-        this.setType(type);
+    protected Enforcement() {
     }
     
-    protected Enforcement(RecordType type, String subject, String subjectIP, String issuer, String reason, Date when) throws UnknownHostException {
-        this(type);
+    protected Enforcement(String subject, String subjectIP, String issuer, String reason, Date when) throws UnknownHostException {
         this.setSubject(subject);
         this.setSubjectIP(subjectIP);
         this.setEnforcer(issuer);
         this.setReason(reason);
         this.setDateIssued(when);
-    }
-
-    /**
-     * @return the type of this record
-     */
-    public RecordType getType() {
-        return type;
-    }
-
-    /**
-     * @param type the type to set
-     */
-    private void setType(RecordType type) {
-        this.type = type;
     }
 
     /**
@@ -186,7 +170,7 @@ public abstract class Enforcement {
     /**
      * Enforces this event upon the subject.
      */
-    protected boolean enforce(Player subject, Player enforcer, String reason) {
+    protected boolean enforce(Player subject, CommandSender enforcer, String reason) {
         if(dateIssued != null) return false;
         dateIssued = new Date();
         this.subject = subject.getName();
