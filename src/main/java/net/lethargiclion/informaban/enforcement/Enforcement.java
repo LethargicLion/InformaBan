@@ -4,16 +4,50 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
 
-import org.bukkit.entity.Player;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Table;
 
-import net.lethargiclion.informaban.persistence.Database.RecordType;
+import org.bukkit.entity.Player;
 
 /**
  * This base class represents a record of a ban, kick, jailing or other event tracked by InformaBan.
  * @author TerrorBite
  *
  */
+@Entity()
+@Table(name="ib_events")
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class Enforcement {
+    
+    public enum RecordType {
+        /**
+         * This is a record of a user being kicked.
+         */
+        KICK,
+        /**
+         * This is a record of a user being banned.
+         */
+        BAN,
+        /**
+         * This is a record of a user being ip-banned.
+         */
+        IPBAN,
+        /**
+         * This is a record of a user being unbanned/pardoned.
+         */
+        UNBAN,
+        /**
+         * For future expansion. This is a record of a user being jailed.
+         */
+        JAIL,
+        /**
+         * This is a comment added manually regarding this user.
+         */
+        COMMENT;
+    }
     
     /**
      * The type of this record.
@@ -22,6 +56,7 @@ public abstract class Enforcement {
     /**
      * The date and time that the recorded event occurred.
      */
+    @Id
     private Date dateIssued = null;
     /**
      * The name of the player who is the subject of the recorded event.

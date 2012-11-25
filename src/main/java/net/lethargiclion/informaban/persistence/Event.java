@@ -13,7 +13,7 @@ import com.avaje.ebean.validation.NotNull;
 public class Event {
     
     @Id
-    private long date;
+    private long dateIssued;
     
     @NotNull
     private byte type;
@@ -53,14 +53,14 @@ public class Event {
      * @return the date
      */
     public long getDate() {
-        return date;
+        return dateIssued;
     }
 
     /**
      * @param date the date to set
      */
     public void setDate(long date) {
-        this.date = date;
+        this.dateIssued = date;
     }
 
     /**

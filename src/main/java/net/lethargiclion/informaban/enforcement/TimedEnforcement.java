@@ -5,9 +5,7 @@ import java.util.Date;
 
 import org.bukkit.entity.Player;
 
-import net.lethargiclion.informaban.persistence.Database.RecordType;
-
-public class TimedEnforcement extends Enforcement {
+public abstract class TimedEnforcement extends Enforcement {
     
     private int duration;
     

@@ -6,8 +6,6 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import net.lethargiclion.informaban.persistence.Database.RecordType;
-
 public class Ban extends TimedEnforcement {
 
     public Ban() {
