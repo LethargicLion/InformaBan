@@ -44,9 +44,9 @@ public class Ban extends TimedEnforcement {
         
         String serverName = "this server";
         
-        message[0] = String.format(" %s%s has %sbanned you from %s!", ChatColor.GOLD, enforcer.getName(), isPermanent()?"PERMANENTLY ":"", serverName);
-        message[1] = String.format("     Reason: %s%s%s", ChatColor.GRAY, ChatColor.ITALIC, reason);
-        message[2] = String.format("       %sYour ban will %s.", ChatColor.GRAY,
+        message[0] = String.format("%s%s has %sbanned you from %s!", ChatColor.GOLD, enforcer.getName(), isPermanent()?"PERMANENTLY ":"", serverName);
+        message[1] = String.format("Reason: %s%s%s", ChatColor.GRAY, ChatColor.ITALIC, reason);
+        message[2] = String.format("%sYour ban will %s.", ChatColor.GRAY,
                 isPermanent() ? "NOT expire" : (String.format("expire in %d seconds", duration)) );
         
         subject.kickPlayer(StringUtils.join(message, '\n'));
@@ -61,9 +61,9 @@ public class Ban extends TimedEnforcement {
         String[] message = new String[3];
         String serverName = "this server";
         
-        message[0] = String.format(" %sYou are %sbanned from %s!", ChatColor.GOLD, isPermanent()?"PERMANENTLY ":"", serverName);
-        message[1] = String.format("     Reason: %s%s%s", ChatColor.GRAY, ChatColor.ITALIC, this.getReason());
-        message[2] = String.format("       %sYour ban (placed by %s%s%s) will %s.", ChatColor.GRAY, ChatColor.WHITE, this.getEnforcer(), ChatColor.GRAY,
+        message[0] = String.format("%sYou are %sbanned from %s!", ChatColor.GOLD, isPermanent()?"PERMANENTLY ":"", serverName);
+        message[1] = String.format("Reason: %s%s%s", ChatColor.GRAY, ChatColor.ITALIC, this.getReason());
+        message[2] = String.format("%sYour ban (placed by %s%s%s) will %s.", ChatColor.GRAY, ChatColor.WHITE, this.getEnforcer(), ChatColor.GRAY,
                 getDuration()!=0 ? String.format("expire in %d seconds", getDuration()) : "NOT expire");
         
         return StringUtils.join(message, '\n');

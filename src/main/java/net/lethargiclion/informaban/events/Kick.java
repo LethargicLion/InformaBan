@@ -37,8 +37,8 @@ public class Kick extends Enforcement {
         String[] message = new String[3];
         // Construct kick message
         String kickMsg = new MessageFormat(messages.getString("banmsg.kickedby"), InformaBan.getLocale()).format(new Object[]{enforcer.getName()});
-        message[0] = String.format(" %s%s", ChatColor.GOLD, kickMsg);
-        message[1] = String.format("     %s: %s%s%s", messages.getString("banmsg.reason"), ChatColor.GRAY, ChatColor.ITALIC, reason);
+        message[0] = String.format("%s%s", ChatColor.GOLD, kickMsg);
+        message[1] = String.format("%s: %s%s%s", messages.getString("banmsg.reason"), ChatColor.GRAY, ChatColor.ITALIC, reason);
         
         // Do the kick
         subject.kickPlayer(StringUtils.join(message, '\n'));
