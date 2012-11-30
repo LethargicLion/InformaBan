@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @Entity
-public abstract class TimedEnforcement extends Enforcement {
+public abstract class TimedEvent extends Event {
     
     /**
      * This duration value indicates that the event does not expire.
@@ -22,10 +22,10 @@ public abstract class TimedEnforcement extends Enforcement {
     @Transient
     private boolean active = true;
     
-    protected TimedEnforcement() {
+    protected TimedEvent() {
     }
 
-    protected TimedEnforcement(String subject, String subjectIP, String issuer, String reason,
+    protected TimedEvent(String subject, String subjectIP, String issuer, String reason,
             Date when, int duration) throws UnknownHostException {
         super(subject, subjectIP, issuer, reason, when);
         setDuration(duration);

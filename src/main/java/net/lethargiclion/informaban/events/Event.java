@@ -21,7 +21,7 @@ import org.bukkit.entity.Player;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 @Table(name="ib_events")
-public abstract class Enforcement {
+public abstract class Event {
     
     public enum RecordType {
         /**
@@ -88,10 +88,10 @@ public abstract class Enforcement {
     /**
      * Creates a "blank" Enforcement with no type.
      */
-    protected Enforcement() {
+    protected Event() {
     }
     
-    protected Enforcement(String subject, String subjectIP, String issuer, String reason, Date when) throws UnknownHostException {
+    protected Event(String subject, String subjectIP, String issuer, String reason, Date when) throws UnknownHostException {
         this.setSubject(subject);
         this.setSubjectIP(subjectIP);
         this.setEnforcer(issuer);

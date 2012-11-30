@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 
 @Entity()
 @DiscriminatorValue("KICK")
-public class Kick extends Enforcement {
+public class Kick extends Event {
     
     public Kick() {}
     

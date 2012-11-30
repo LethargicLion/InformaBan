@@ -62,8 +62,8 @@ public class InformaBan extends JavaPlugin {
 	 */
 	private void createDBClassList() {
     	ebeans = new ArrayList<Class<?>>();
-        ebeans.add(net.lethargiclion.informaban.events.Enforcement.class);
-        ebeans.add(net.lethargiclion.informaban.events.TimedEnforcement.class);
+        ebeans.add(net.lethargiclion.informaban.events.Event.class);
+        ebeans.add(net.lethargiclion.informaban.events.TimedEvent.class);
         ebeans.add(net.lethargiclion.informaban.events.Ban.class);
         ebeans.add(net.lethargiclion.informaban.events.Kick.class);
     }
@@ -152,7 +152,7 @@ public class InformaBan extends JavaPlugin {
 
     private void initDatabase() {
         try {
-            getDatabase().find(net.lethargiclion.informaban.events.Enforcement.class).findRowCount();
+            getDatabase().find(net.lethargiclion.informaban.events.Event.class).findRowCount();
         } catch(PersistenceException ex) {
             this.getLogger().info(messages.getString("plugin.enable.database"));
             

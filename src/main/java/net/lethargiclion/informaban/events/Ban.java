@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 
 @Entity()
 @DiscriminatorValue("BAN")
-public class Ban extends TimedEnforcement {
+public class Ban extends TimedEvent {
     
     public Ban() {}
     

@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.lethargiclion.informaban.events.Ban;
-import net.lethargiclion.informaban.events.Enforcement;
+import net.lethargiclion.informaban.events.Event;
 import net.lethargiclion.informaban.events.Kick;
 
 import org.apache.commons.lang.StringUtils;
@@ -105,11 +105,11 @@ public class InformaBanCommandExecutor implements CommandExecutor {
         if(args.length == 1) {
             String name = args[0];
             // Database query: Case insensitive match on player name.
-            List<Enforcement> events = plugin.getDatabase().find(Enforcement.class).where().ieq("subject", name).findList();
+            List<Event> events = plugin.getDatabase().find(Event.class).where().ieq("subject", name).findList();
             if(events.isEmpty()) {
                 sender.sendMessage(MessageFormat.format(plugin.messages.getString("command.rap.clean"), name));
             }
-            Iterator<Enforcement> i = events.iterator();
+            Iterator<Event> i = events.iterator();
             while(i.hasNext()) {
                 sender.sendMessage(i.next().toString());
             }
