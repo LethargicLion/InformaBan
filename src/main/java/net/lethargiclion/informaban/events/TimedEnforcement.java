@@ -15,7 +15,7 @@ public abstract class TimedEnforcement extends Enforcement {
     private int duration;
     
     @Transient
-    private boolean active;
+    private boolean active = true;
     
     protected TimedEnforcement() {
     }
