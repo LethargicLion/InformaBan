@@ -37,6 +37,8 @@ public class InformaBan extends JavaPlugin {
 	private final InformaBanEventListener eventListener = new InformaBanEventListener(this);
 	//ClassListeners
 	
+	private List<Class<?>> ebeans;
+	
 	// Locale
 	private static Locale locale;
 	
@@ -50,10 +52,24 @@ public class InformaBan extends JavaPlugin {
 	    setLocale(Locale.getDefault());
 	    //setupLocale(new Locale("en", "PI")); // English (Pirate) for testing
 	    
+	    // Compile list of bean classes
+	    createDBClassList();
+	    
 	}
 	
 	/**
-	 * STatic method to return this plugin's current locale.
+	 * Generate list of database classes for getDatabaseClasses()
+	 */
+	private void createDBClassList() {
+    	ebeans = new ArrayList<Class<?>>();
+        ebeans.add(net.lethargiclion.informaban.events.Enforcement.class);
+        ebeans.add(net.lethargiclion.informaban.events.TimedEnforcement.class);
+        ebeans.add(net.lethargiclion.informaban.events.Ban.class);
+        ebeans.add(net.lethargiclion.informaban.events.Kick.class);
+    }
+	
+	/**
+	 * Static method to return this plugin's current locale.
 	 * @return
 	 */
 	public static Locale getLocale() {
@@ -147,15 +163,10 @@ public class InformaBan extends JavaPlugin {
     }
     
     /**
-     * Return a list of the database classes (beans) implemented by this plugin.
+     * Return a list of the database classes implemented by this plugin.
      */
     @Override
     public List<Class<?>> getDatabaseClasses() {
-        List<Class<?>> list = new ArrayList<Class<?>>();
-        list.add(net.lethargiclion.informaban.events.Enforcement.class);
-        list.add(net.lethargiclion.informaban.events.TimedEnforcement.class);
-        list.add(net.lethargiclion.informaban.events.Ban.class);
-        list.add(net.lethargiclion.informaban.events.Kick.class);
-        return list;
+        return ebeans;
     }
 }
