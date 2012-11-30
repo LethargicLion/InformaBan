@@ -12,6 +12,11 @@ import org.bukkit.entity.Player;
 @Entity
 public abstract class TimedEnforcement extends Enforcement {
     
+    /**
+     * This duration value indicates that the event does not expire.
+     */
+    public static final int PERMANENT = 0;
+    
     private int duration;
     
     @Transient
@@ -34,6 +39,7 @@ public abstract class TimedEnforcement extends Enforcement {
     }
     
     public boolean isActive() {
+        if(this.duration == PERMANENT) return true;
         if(!this.active) return false;
         Date ends = new Date(this.getDateIssued().getTime()+duration*1000);
         if(ends.before(new Date())) return false;
@@ -45,6 +51,10 @@ public abstract class TimedEnforcement extends Enforcement {
      */
     public int getDuration() {
         return duration;
+    }
+    
+    public boolean isPermanent() {
+        return duration == PERMANENT;
     }
 
     /**

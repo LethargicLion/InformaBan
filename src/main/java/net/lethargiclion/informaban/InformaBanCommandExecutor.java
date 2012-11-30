@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import net.lethargiclion.informaban.events.Ban;
 import net.lethargiclion.informaban.events.Enforcement;
 import net.lethargiclion.informaban.events.Kick;
 
@@ -42,8 +43,17 @@ public class InformaBanCommandExecutor implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if (command.getName().equalsIgnoreCase("kick")) return commandKick(sender, args);
-        if (command.getName().equalsIgnoreCase("rap")) return commandRap(sender, args);
+        try {
+            if (command.getName().equalsIgnoreCase("kick")) return commandKick(sender, args);
+            if (command.getName().equalsIgnoreCase("rap")) return commandRap(sender, args);
+            if (command.getName().equalsIgnoreCase("ban")) return commandBan(sender, args);
+        }
+        catch(java.util.MissingResourceException e) {
+            sender.sendMessage(new String[]{
+                    "[InformaBan] An internal error occured. Please file a bug report.",
+                    String.format("[InformaBan] Error: No message defined for \"%s\".", e.getKey())
+            });
+        }
         return false;
     }
     
@@ -55,7 +65,8 @@ public class InformaBanCommandExecutor implements CommandExecutor {
                 // Set up kick message
                 String banReason = StringUtils.join(Arrays.copyOfRange(args, 1, args.length), ' ');
 
-                plugin.getLogger().info(new MessageFormat(plugin.messages.getString("command.kick.consoleLog"), InformaBan.getLocale()).format(new Object[]{sender.getName(), victim.getName()}));
+                // Log kick to console
+                plugin.getLogger().info(MessageFormat.format(plugin.messages.getString("command.kick.consoleLog"), new Object[]{sender.getName(), victim.getName()}));
                 
                 // Do the kick and record it
                 Kick k = new Kick();
@@ -68,16 +79,41 @@ public class InformaBanCommandExecutor implements CommandExecutor {
         return false;
     }
     
+    private boolean commandBan(CommandSender sender, String[] args) {
+        if(args.length == 1) sender.sendMessage(plugin.messages.getString("command.ban.reasonRequired"));
+        if(args.length > 1) {
+            Player victim = sender.getServer().getPlayer(args[0]);
+            if(victim != null) {
+                // Set up ban message
+                String banReason = StringUtils.join(Arrays.copyOfRange(args, 1, args.length), ' ');
+
+                // Log ban to console
+                plugin.getLogger().info(MessageFormat.format(plugin.messages.getString("command.ban.consoleLog"), new Object[]{sender.getName(), victim.getName()}));
+                
+                // Do the ban and record it
+                Ban b = new Ban();
+                b.enforce(plugin.messages, victim, sender, banReason, Ban.PERMANENT);
+                plugin.getDatabase().insert(b);
+            }
+            else sender.sendMessage(plugin.messages.getString("error.playerNotFound"));
+            return true;
+        }
+        return false;
+    }
+    
     private boolean commandRap(CommandSender sender, String[] args) {
-        if(args.length == 0) sender.sendMessage(plugin.messages.getString("command.rap.playerRequired"));
-        else {
+        if(args.length == 1) {
             String name = args[0];
-            List<Enforcement> events = plugin.getDatabase().find(Enforcement.class).where().eq("subject", name).findList();
+            // Database query: Case insensitive match on player name.
+            List<Enforcement> events = plugin.getDatabase().find(Enforcement.class).where().ieq("subject", name).findList();
+            if(events.isEmpty()) {
+                sender.sendMessage(MessageFormat.format(plugin.messages.getString("command.rap.clean"), name));
+            }
             Iterator<Enforcement> i = events.iterator();
-            
             while(i.hasNext()) {
                 sender.sendMessage(i.next().toString());
             }
+            return true;
         }
         return false;
     }

@@ -3,18 +3,20 @@ package net.lethargiclion.informaban.events;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.ResourceBundle;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @Entity()
 @DiscriminatorValue("BAN")
 public class Ban extends TimedEnforcement {
-
+    
     public Ban() {}
     
     public Ban(String subject, String subjectIP, String issuer, String reason, Date when, int duration) throws UnknownHostException {
@@ -31,7 +33,7 @@ public class Ban extends TimedEnforcement {
      * @param duration The length of the ban in seconds, or 0 for a permanent ban.
      * @return true if successfully enforced; false if the ban has already been enforced.
      */
-    public boolean enforce(Player subject, Player enforcer, String reason, int duration) {
+    public boolean enforce(ResourceBundle messages, Player subject, CommandSender enforcer, String reason, int duration) {
         if(this.getDateIssued() != null) return false;
         
         super.enforce(subject, enforcer, reason, duration);
@@ -42,7 +44,7 @@ public class Ban extends TimedEnforcement {
         
         String serverName = "this server";
         
-        message[0] = String.format(" %s%s has %sbanned you from %s!", ChatColor.GOLD, duration!=0?"":"PERMANENTLY ", serverName);
+        message[0] = String.format(" %s%s has %sbanned you from %s!", ChatColor.GOLD, isPermanent()?"PERMANENTLY ":"", serverName);
         message[1] = String.format("     Reason: %s%s%s", ChatColor.GRAY, ChatColor.ITALIC, reason);
         message[2] = String.format("       %sYour ban will %s.", ChatColor.GRAY, ChatColor.WHITE, enforcer.getName(), ChatColor.GRAY,
                 duration!=0 ? (String.format("expire in %d seconds", duration)) : "NOT expire");
@@ -59,7 +61,7 @@ public class Ban extends TimedEnforcement {
         String[] message = new String[3];
         String serverName = "this server";
         
-        message[0] = String.format(" %sYou are %sbanned from %s!", ChatColor.GOLD, getDuration()!=0?"":"PERMANENTLY ", serverName);
+        message[0] = String.format(" %sYou are %sbanned from %s!", ChatColor.GOLD, isPermanent()?"PERMANENTLY ":"", serverName);
         message[1] = String.format("     Reason: %s%s%s", ChatColor.GRAY, ChatColor.ITALIC, this.getReason());
         message[2] = String.format("       %sYour ban (placed by %s%s%s) will %s.", ChatColor.GRAY, ChatColor.WHITE, this.getEnforcer(), ChatColor.GRAY,
                 getDuration()!=0 ? String.format("expire in %d seconds", getDuration()) : "NOT expire");

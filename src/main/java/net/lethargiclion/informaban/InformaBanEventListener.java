@@ -39,7 +39,18 @@ public class InformaBanEventListener implements Listener {
 	@EventHandler
 	public void onPlayerLogin(PlayerLoginEvent event) {
 	    
-	    // TODO: Keep a separate table of active bans for efficiency
+	    try {
+	        checkBans(event);
+	    }
+        catch(java.util.MissingResourceException e) {
+            plugin.getLogger().severe("[InformaBan] An internal error occured. Please file a bug report.");
+            plugin.getLogger().severe(String.format("[InformaBan] Error: No message defined for \"%s\".", e.getKey()));
+        }
+
+	}
+	
+	private void checkBans(PlayerLoginEvent event) {
+	    	    // TODO: Keep a separate table of active bans for efficiency
         List<Ban> bans = plugin.getDatabase().find(Ban.class).where().eq("subject", event.getPlayer().getName()).findList();
         Iterator<Ban> i = bans.iterator();
         
