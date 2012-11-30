@@ -1,7 +1,7 @@
 name: ${project.name}
-main: ${main.class}
+main: ${project.groupId}.${project.artifactId}.${project.name}
 version: ${project.version}
-description: ${project.name} is a Bukkit plugin aiming to provide a kick/ban system that sensibly tracks and displays a player's kick and ban history.
+description: ${project.description}
 
 # Ask Bukkit to load our plugin before CommandBook or Essentials, to ensure our plugin registers its commands first.
 loadbefore: [CommandBook, Essentials]
