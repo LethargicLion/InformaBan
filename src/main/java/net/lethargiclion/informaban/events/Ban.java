@@ -44,10 +44,10 @@ public class Ban extends TimedEnforcement {
         
         String serverName = "this server";
         
-        message[0] = String.format(" %s%s has %sbanned you from %s!", ChatColor.GOLD, isPermanent()?"PERMANENTLY ":"", serverName);
+        message[0] = String.format(" %s%s has %sbanned you from %s!", ChatColor.GOLD, enforcer.getName(), isPermanent()?"PERMANENTLY ":"", serverName);
         message[1] = String.format("     Reason: %s%s%s", ChatColor.GRAY, ChatColor.ITALIC, reason);
-        message[2] = String.format("       %sYour ban will %s.", ChatColor.GRAY, ChatColor.WHITE, enforcer.getName(), ChatColor.GRAY,
-                duration!=0 ? (String.format("expire in %d seconds", duration)) : "NOT expire");
+        message[2] = String.format("       %sYour ban will %s.", ChatColor.GRAY,
+                isPermanent() ? "NOT expire" : (String.format("expire in %d seconds", duration)) );
         
         subject.kickPlayer(StringUtils.join(message, '\n'));
         return true;
