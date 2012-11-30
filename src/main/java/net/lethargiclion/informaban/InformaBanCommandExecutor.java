@@ -32,14 +32,25 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+/**
+ * InformaBan command executor class.
+ * Processes commands.
+ * @author TerrorBite
+ *
+ */
 public class InformaBanCommandExecutor implements CommandExecutor {
 
     private InformaBan plugin;
 
+    /**
+     * Creates a new instance of this command executor.
+     * @param plugin The parent plugin instance.
+     */
     public InformaBanCommandExecutor(InformaBan plugin) {
         this.plugin = plugin;
     }
 
+    // Javadocs provided by overridden method
     @Override
     public boolean onCommand(CommandSender sender, Command command,
             String label, String[] args) {
@@ -61,6 +72,12 @@ public class InformaBanCommandExecutor implements CommandExecutor {
         return false;
     }
 
+    /**
+     * Handles the /kick command.
+     * @param sender The CommandSender executing this command.
+     * @param args The command arguments.
+     * @return False if a usage message should be displayed.
+     */
     private boolean commandKick(CommandSender sender, String[] args) {
         if (args.length == 1)
             sender.sendMessage(plugin.messages
@@ -92,6 +109,12 @@ public class InformaBanCommandExecutor implements CommandExecutor {
         return false;
     }
 
+    /**
+     * Handles the /ban command.
+     * @param sender The CommandSender executing this command.
+     * @param args The command arguments.
+     * @return False if a usage message should be displayed.
+     */
     private boolean commandBan(CommandSender sender, String[] args) {
         if (args.length == 1)
             sender.sendMessage(plugin.messages
@@ -124,6 +147,12 @@ public class InformaBanCommandExecutor implements CommandExecutor {
         return false;
     }
 
+    /**
+     * Handles the /rap command.
+     * @param sender The CommandSender executing this command.
+     * @param args The command arguments.
+     * @return False if a usage message should be displayed.
+     */
     private boolean commandRap(CommandSender sender, String[] args) {
         if (args.length == 1) {
             String name = args[0];

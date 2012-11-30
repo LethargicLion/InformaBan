@@ -27,14 +27,28 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 
+/**
+ * InformaBan event listener class.
+ * Processes events.
+ * @author TerrorBite
+ *
+ */
 public class InformaBanEventListener implements Listener {
 
     private InformaBan plugin;
 
+    /**
+     * Creates a new instance of this event listener.
+     * @param plugin The parent plugin
+     */
     public InformaBanEventListener(InformaBan plugin) {
         this.plugin = plugin;
     }
 
+    /**
+     * Handles the player login event.
+     * @param event Event to process.
+     */
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
 
@@ -51,6 +65,10 @@ public class InformaBanEventListener implements Listener {
 
     }
 
+    /**
+     * Checks whether this player is banned, and modifies the event accordingly.
+     * @param event
+     */
     private void checkBans(PlayerLoginEvent event) {
         // TODO: Keep a separate table of active bans for efficiency
         List<Ban> bans = plugin.getDatabase().find(Ban.class).where()

@@ -30,6 +30,11 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+/**
+ * Main InformaBan plugin class.
+ * @author TerrorBite
+ *
+ */
 public class InformaBan extends JavaPlugin {
 
     // ClassListeners
