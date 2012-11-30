@@ -1,20 +1,20 @@
 package net.lethargiclion.informaban;
 
 /*
-    This file is part of InformaBan.
+ This file is part of InformaBan.
 
-    InformaBan is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ InformaBan is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    InformaBan is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ InformaBan is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with InformaBan.  If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU General Public License
+ along with InformaBan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import java.text.MessageFormat;
@@ -32,136 +32,143 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class InformaBan extends JavaPlugin {
 
-	//ClassListeners
-	private final InformaBanCommandExecutor commandExecutor = new InformaBanCommandExecutor(this);
-	private final InformaBanEventListener eventListener = new InformaBanEventListener(this);
-	//ClassListeners
-	
-	private List<Class<?>> ebeans;
-	
-	// Locale
-	private static Locale locale;
-	
-	// Localised messages
-	ResourceBundle messages;
-	
-	public InformaBan() {
-	    
-	    // Until we get the user's preferred locale from the config file,
-	    // use the environmental locale which should be a sensible default.
-	    setLocale(Locale.getDefault());
-	    //setupLocale(new Locale("en", "PI")); // English (Pirate) for testing
-	    
-	    // Compile list of bean classes
-	    createDBClassList();
-	    
-	}
-	
-	/**
-	 * Generate list of database classes for getDatabaseClasses()
-	 */
-	private void createDBClassList() {
-    	ebeans = new ArrayList<Class<?>>();
+    // ClassListeners
+    private final InformaBanCommandExecutor commandExecutor = new InformaBanCommandExecutor(
+            this);
+    private final InformaBanEventListener eventListener = new InformaBanEventListener(
+            this);
+    // ClassListeners
+
+    private List<Class<?>> ebeans;
+
+    // Locale
+    private static Locale locale;
+
+    // Localised messages
+    ResourceBundle messages;
+
+    public InformaBan() {
+
+        // Until we get the user's preferred locale from the config file,
+        // use the environmental locale which should be a sensible default.
+        setLocale(Locale.getDefault());
+        // setupLocale(new Locale("en", "PI")); // English (Pirate) for testing
+
+        // Compile list of bean classes
+        createDBClassList();
+
+    }
+
+    /**
+     * Generate list of database classes for getDatabaseClasses()
+     */
+    private void createDBClassList() {
+        ebeans = new ArrayList<Class<?>>();
         ebeans.add(net.lethargiclion.informaban.events.Event.class);
         ebeans.add(net.lethargiclion.informaban.events.TimedEvent.class);
         ebeans.add(net.lethargiclion.informaban.events.Ban.class);
         ebeans.add(net.lethargiclion.informaban.events.Kick.class);
     }
-	
-	/**
-	 * Static method to return this plugin's current locale.
-	 * @return
-	 */
-	public static Locale getLocale() {
-	    return locale;
-	}
-	
-	/**
-	 * Sets the locale for this plugin, and loads the messages for it.
-	 * @param l
-	 */
-	public void setLocale(Locale l) {
-	    locale = l;
-	    messages = ResourceBundle.getBundle("Messages", l);
+
+    /**
+     * Static method to return this plugin's current locale.
+     * 
+     * @return
+     */
+    public static Locale getLocale() {
+        return locale;
     }
 
-	public void onDisable() {
-		// add any code you want to be executed when your plugin is disabled
-	    Logger log = this.getLogger();
-	    
-	    MessageFormat disableSuccess = new MessageFormat(messages.getString("plugin.disable.success"), locale);
-	    log.info(disableSuccess.format(new Object[]{this.getName()}));
-	}
+    /**
+     * Sets the locale for this plugin, and loads the messages for it.
+     * 
+     * @param l
+     */
+    public void setLocale(Locale l) {
+        locale = l;
+        messages = ResourceBundle.getBundle("Messages", l);
+    }
 
-	public void onEnable() {
-	    
-	    Logger log = this.getLogger();
+    public void onDisable() {
+        // add any code you want to be executed when your plugin is disabled
+        Logger log = this.getLogger();
 
-		PluginManager pm = this.getServer().getPluginManager();
-		
-		MessageFormat msgFailed = new MessageFormat(messages.getString("plugin.enable.commandFailure"), locale);
+        MessageFormat disableSuccess = new MessageFormat(
+                messages.getString("plugin.disable.success"), locale);
+        log.info(disableSuccess.format(new Object[] { this.getName() }));
+    }
 
-		PluginCommand ib = getCommand("ib"); 
-		if(ib != null) {
-		    ib.setExecutor(commandExecutor);
-		    // Override the default description and usage from plugin.yml with localized versions
-		    ib.setDescription(messages.getString("command.ib.description"));
-		    ib.setUsage(messages.getString("command.ib.usage"));
-		}
-		else {
-		    log.severe(msgFailed.format(new Object[]{"/ib"}));
-		    pm.disablePlugin(this);
-		}
-		
-		PluginCommand kick = getCommand("kick");
-		if(kick != null) {
-		    kick.setExecutor(commandExecutor);
-		    kick.setDescription(messages.getString("command.kick.description"));
-		    kick.setUsage(messages.getString("command.kick.usage"));
-		}
-	    else log.warning(msgFailed.format(new Object[]{"/kick"}));
-		
+    public void onEnable() {
+
+        Logger log = this.getLogger();
+
+        PluginManager pm = this.getServer().getPluginManager();
+
+        MessageFormat msgFailed = new MessageFormat(
+                messages.getString("plugin.enable.commandFailure"), locale);
+
+        PluginCommand ib = getCommand("ib");
+        if (ib != null) {
+            ib.setExecutor(commandExecutor);
+            // Override the default description and usage from plugin.yml with
+            // localized versions
+            ib.setDescription(messages.getString("command.ib.description"));
+            ib.setUsage(messages.getString("command.ib.usage"));
+        } else {
+            log.severe(msgFailed.format(new Object[] { "/ib" }));
+            pm.disablePlugin(this);
+        }
+
+        PluginCommand kick = getCommand("kick");
+        if (kick != null) {
+            kick.setExecutor(commandExecutor);
+            kick.setDescription(messages.getString("command.kick.description"));
+            kick.setUsage(messages.getString("command.kick.usage"));
+        } else
+            log.warning(msgFailed.format(new Object[] { "/kick" }));
+
         PluginCommand ban = getCommand("ban");
-        if(ban != null) {
+        if (ban != null) {
             ban.setExecutor(commandExecutor);
             ban.setDescription(messages.getString("command.ban.description"));
             ban.setUsage(messages.getString("command.ban.usage"));
-        }
-        else log.warning(msgFailed.format(new Object[]{"/ban"}));
-        
+        } else
+            log.warning(msgFailed.format(new Object[] { "/ban" }));
+
         PluginCommand rap = getCommand("rap");
-        if(rap != null) {
+        if (rap != null) {
             rap.setExecutor(commandExecutor);
             rap.setDescription(messages.getString("command.rap.description"));
             rap.setUsage(messages.getString("command.rap.usage"));
-        }
-        else log.warning(msgFailed.format(new Object[]{"/rap"}));
+        } else
+            log.warning(msgFailed.format(new Object[] { "/rap" }));
 
+        // you can register multiple classes to handle events if you want
+        // just call pm.registerEvents() on an instance of each class
+        pm.registerEvents(eventListener, this);
 
-		// you can register multiple classes to handle events if you want
-		// just call pm.registerEvents() on an instance of each class
-		pm.registerEvents(eventListener, this);
-		
-		// Set up database
-		initDatabase();
+        // Set up database
+        initDatabase();
 
-		// do any other initialisation you need here...
-		MessageFormat enableSuccess = new MessageFormat(messages.getString("plugin.enable.success"), locale);
-		log.info(enableSuccess.format(new Object[]{this.getName()}));
-	}
+        // do any other initialisation you need here...
+        MessageFormat enableSuccess = new MessageFormat(
+                messages.getString("plugin.enable.success"), locale);
+        log.info(enableSuccess.format(new Object[] { this.getName() }));
+    }
 
     private void initDatabase() {
         try {
-            getDatabase().find(net.lethargiclion.informaban.events.Event.class).findRowCount();
-        } catch(PersistenceException ex) {
+            getDatabase().find(net.lethargiclion.informaban.events.Event.class)
+                    .findRowCount();
+        } catch (PersistenceException ex) {
             this.getLogger().info(messages.getString("plugin.enable.database"));
-            
+
             // Set up tables and stuff
             installDDL();
         }
-        
+
     }
-    
+
     /**
      * Return a list of the database classes implemented by this plugin.
      */

@@ -12,17 +12,19 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * This base class represents a record of a ban, kick, jailing or other event tracked by InformaBan.
+ * This base class represents a record of a ban, kick, jailing or other event
+ * tracked by InformaBan.
+ * 
  * @author TerrorBite
- *
+ * 
  */
 
 @Entity
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
-@Table(name="ib_events")
+@Table(name = "ib_events")
 public abstract class Event {
-    
+
     public enum RecordType {
         /**
          * This is a record of a user being kicked.
@@ -49,13 +51,14 @@ public abstract class Event {
          */
         COMMENT;
     }
-    
+
     /**
      * A unique ID for this record (for the database)
      */
     @Id
     @GeneratedValue
     UUID id = null;
+
     public UUID getId() {
         return id;
     }
@@ -84,14 +87,15 @@ public abstract class Event {
      * The reason for enforcement.
      */
     private String reason = null;
-    
+
     /**
      * Creates a "blank" Enforcement with no type.
      */
     protected Event() {
     }
-    
-    protected Event(String subject, String subjectIP, String issuer, String reason, Date when) throws UnknownHostException {
+
+    protected Event(String subject, String subjectIP, String issuer,
+            String reason, Date when) throws UnknownHostException {
         this.setSubject(subject);
         this.setSubjectIP(subjectIP);
         this.setEnforcer(issuer);
@@ -107,7 +111,8 @@ public abstract class Event {
     }
 
     /**
-     * @param dateIssued The date and time that the recorded event occurred.
+     * @param dateIssued
+     *            The date and time that the recorded event occurred.
      */
     public void setDateIssued(Date dateIssued) {
         this.dateIssued = dateIssued;
@@ -121,7 +126,9 @@ public abstract class Event {
     }
 
     /**
-     * @param subject The name of the player who is the subject of the recorded event.
+     * @param subject
+     *            The name of the player who is the subject of the recorded
+     *            event.
      */
     public void setSubject(String subject) {
         this.subject = subject;
@@ -135,15 +142,20 @@ public abstract class Event {
     }
 
     /**
-     * @param subjectIP The IP address of the subject.
+     * @param subjectIP
+     *            The IP address of the subject.
      */
     public void setSubjectIP(InetAddress subjectIP) {
         this.subjectIP = subjectIP;
     }
-    
+
     /**
-     * @param subjectIP The string representation of the subject's IP, or the hostname of the subject.
-     * @throws UnknownHostException Thrown if the supplied string is not an IP address and is not a hostname that resolves to an IP address.
+     * @param subjectIP
+     *            The string representation of the subject's IP, or the hostname
+     *            of the subject.
+     * @throws UnknownHostException
+     *             Thrown if the supplied string is not an IP address and is not
+     *             a hostname that resolves to an IP address.
      */
     public void setSubjectIP(String subjectIP) throws UnknownHostException {
         this.subjectIP = InetAddress.getByName(subjectIP);
@@ -157,7 +169,8 @@ public abstract class Event {
     }
 
     /**
-     * @param issuer The name of the player who enforced this event.
+     * @param issuer
+     *            The name of the player who enforced this event.
      */
     public void setEnforcer(String issuer) {
         this.enforcer = issuer;
@@ -171,7 +184,8 @@ public abstract class Event {
     }
 
     /**
-     * @param The reason for enforcement.
+     * @param The
+     *            reason for enforcement.
      */
     public void setReason(String reason) {
         this.reason = reason;
@@ -180,8 +194,10 @@ public abstract class Event {
     /**
      * Enforces this event upon the subject.
      */
-    protected boolean enforce(Player subject, CommandSender enforcer, String reason) {
-        if(getDateIssued() != null) return false;
+    protected boolean enforce(Player subject, CommandSender enforcer,
+            String reason) {
+        if (getDateIssued() != null)
+            return false;
         setDateIssued(new Date());
         this.subject = subject.getName();
         this.subjectIP = subject.getAddress().getAddress();
@@ -189,9 +205,10 @@ public abstract class Event {
         this.reason = reason;
         return true;
     }
-    
+
     @Override
     public String toString() {
-        return String.format("Placed by %s against %s on %s", getEnforcer(), getSubject(), DateFormat.getInstance().format(getDateIssued()));
+        return String.format("Placed by %s against %s on %s", getEnforcer(),
+                getSubject(), DateFormat.getInstance().format(getDateIssued()));
     }
 }
