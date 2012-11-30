@@ -19,13 +19,13 @@ package net.lethargiclion.informaban;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
-import net.lethargiclion.informaban.enforcement.Kick;
-import net.lethargiclion.informaban.persistence.Event;
+import net.lethargiclion.informaban.events.Enforcement;
+import net.lethargiclion.informaban.events.Kick;
 
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -43,16 +43,17 @@ public class InformaBanCommandExecutor implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if (command.getName().equalsIgnoreCase("kick")) return commandKick(sender, args);
+        if (command.getName().equalsIgnoreCase("rap")) return commandRap(sender, args);
         return false;
     }
     
     private boolean commandKick(CommandSender sender, String[] args ) {
         if(args.length == 1) sender.sendMessage(plugin.messages.getString("command.kick.reasonRequired"));
         if(args.length > 1) {
-            Player victim = sender.getServer().getPlayer(args[1]);
+            Player victim = sender.getServer().getPlayer(args[0]);
             if(victim != null) {
                 // Set up kick message
-                String banReason = StringUtils.join(Arrays.copyOfRange(args, 2, args.length), ' ');
+                String banReason = StringUtils.join(Arrays.copyOfRange(args, 1, args.length), ' ');
 
                 plugin.getLogger().info(new MessageFormat(plugin.messages.getString("command.kick.consoleLog"), InformaBan.getLocale()).format(new Object[]{sender.getName(), victim.getName()}));
                 
@@ -63,6 +64,20 @@ public class InformaBanCommandExecutor implements CommandExecutor {
             }
             else sender.sendMessage(plugin.messages.getString("error.playerNotFound"));
             return true;
+        }
+        return false;
+    }
+    
+    private boolean commandRap(CommandSender sender, String[] args) {
+        if(args.length == 0) sender.sendMessage(plugin.messages.getString("command.rap.playerRequired"));
+        else {
+            String name = args[0];
+            List<Enforcement> events = plugin.getDatabase().find(Enforcement.class).where().eq("subject", name).findList();
+            Iterator<Enforcement> i = events.iterator();
+            
+            while(i.hasNext()) {
+                sender.sendMessage(i.next().toString());
+            }
         }
         return false;
     }

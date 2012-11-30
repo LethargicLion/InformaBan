@@ -1,17 +1,18 @@
-package net.lethargiclion.informaban.enforcement;
+package net.lethargiclion.informaban.events;
 
 import java.net.UnknownHostException;
+import java.text.DateFormat;
 import java.util.Date;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Table;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 @Entity()
-@Table(name="ib_events")
+@DiscriminatorValue("BAN")
 public class Ban extends TimedEnforcement {
 
     public Ban() {}
@@ -24,10 +25,13 @@ public class Ban extends TimedEnforcement {
      * Enforce this ban.
      * 
      * Note that this performs the initial enforcement of the ban, e.g. when the ban was initially placed.
+     * @param subject The player being banned.
+     * @param enforcer The player (or console) performing the ban.
+     * @param reason The reason given for the ban.
+     * @param duration The length of the ban in seconds, or 0 for a permanent ban.
      * @return true if successfully enforced; false if the ban has already been enforced.
      */
-    public boolean enforce(Player subject, Player enforcer, String reason, int duration) 
-    {
+    public boolean enforce(Player subject, Player enforcer, String reason, int duration) {
         if(this.getDateIssued() != null) return false;
         
         super.enforce(subject, enforcer, reason, duration);
@@ -62,6 +66,11 @@ public class Ban extends TimedEnforcement {
         
         return StringUtils.join(message, '\n');
         
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("%s banned %s on %s for %d seconds: %s", getEnforcer(), getSubject(), DateFormat.getInstance().format(getDateIssued()), getDuration(), getReason());
     }
 
 }

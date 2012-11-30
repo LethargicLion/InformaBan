@@ -1,13 +1,12 @@
-package net.lethargiclion.informaban.enforcement;
+package net.lethargiclion.informaban.events;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.UUID;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -18,7 +17,10 @@ import org.bukkit.entity.Player;
  *
  */
 
-@MappedSuperclass
+@Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
+@Table(name="ib_events")
 public abstract class Enforcement {
     
     public enum RecordType {
@@ -54,6 +56,14 @@ public abstract class Enforcement {
     @Id
     @GeneratedValue
     UUID id = null;
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
     /**
      * The date and time that the recorded event occurred.
      */
@@ -99,7 +109,7 @@ public abstract class Enforcement {
     /**
      * @param dateIssued The date and time that the recorded event occurred.
      */
-    protected void setDateIssued(Date dateIssued) {
+    public void setDateIssued(Date dateIssued) {
         this.dateIssued = dateIssued;
     }
 
@@ -113,7 +123,7 @@ public abstract class Enforcement {
     /**
      * @param subject The name of the player who is the subject of the recorded event.
      */
-    protected void setSubject(String subject) {
+    public void setSubject(String subject) {
         this.subject = subject;
     }
 
@@ -127,7 +137,7 @@ public abstract class Enforcement {
     /**
      * @param subjectIP The IP address of the subject.
      */
-    protected void setSubjectIP(InetAddress subjectIP) {
+    public void setSubjectIP(InetAddress subjectIP) {
         this.subjectIP = subjectIP;
     }
     
@@ -135,7 +145,7 @@ public abstract class Enforcement {
      * @param subjectIP The string representation of the subject's IP, or the hostname of the subject.
      * @throws UnknownHostException Thrown if the supplied string is not an IP address and is not a hostname that resolves to an IP address.
      */
-    protected void setSubjectIP(String subjectIP) throws UnknownHostException {
+    public void setSubjectIP(String subjectIP) throws UnknownHostException {
         this.subjectIP = InetAddress.getByName(subjectIP);
     }
 
@@ -149,7 +159,7 @@ public abstract class Enforcement {
     /**
      * @param issuer The name of the player who enforced this event.
      */
-    protected void setEnforcer(String issuer) {
+    public void setEnforcer(String issuer) {
         this.enforcer = issuer;
     }
 
@@ -163,7 +173,7 @@ public abstract class Enforcement {
     /**
      * @param The reason for enforcement.
      */
-    protected void setReason(String reason) {
+    public void setReason(String reason) {
         this.reason = reason;
     }
 
@@ -171,8 +181,8 @@ public abstract class Enforcement {
      * Enforces this event upon the subject.
      */
     protected boolean enforce(Player subject, CommandSender enforcer, String reason) {
-        if(dateIssued != null) return false;
-        dateIssued = new Date();
+        if(getDateIssued() != null) return false;
+        setDateIssued(new Date());
         this.subject = subject.getName();
         this.subjectIP = subject.getAddress().getAddress();
         this.enforcer = enforcer.getName();
@@ -180,4 +190,8 @@ public abstract class Enforcement {
         return true;
     }
     
+    @Override
+    public String toString() {
+        return String.format("Placed by %s against %s on %s", getEnforcer(), getSubject(), DateFormat.getInstance().format(getDateIssued()));
+    }
 }

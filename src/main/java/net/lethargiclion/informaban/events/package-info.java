@@ -3,4 +3,4 @@
  *
  * @author TerrorBite
  */
-package net.lethargiclion.informaban.enforcement;
+package net.lethargiclion.informaban.events;

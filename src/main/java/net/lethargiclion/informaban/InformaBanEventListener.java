@@ -17,26 +17,17 @@ package net.lethargiclion.informaban;
     along with InformaBan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.util.Random;
-
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.ChatColor;
-
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerLoginEvent.Result;
 
 public class InformaBanEventListener implements Listener {
 
 	@SuppressWarnings("unused")
     private InformaBan plugin;
 	
-	private Random r;
-
 	public InformaBanEventListener(InformaBan plugin) {
 		this.plugin = plugin;
-		r = new Random(); // for testing
 	}
 
 
@@ -44,6 +35,8 @@ public class InformaBanEventListener implements Listener {
 	public void onPlayerLogin(PlayerLoginEvent event) {
 	    //Example ban code (for now just testing message formatting)
 	    
+	    return;
+	    /*
 	    String[] message = new String[3];
 	    
 	    String serverName = "this server";
@@ -59,5 +52,6 @@ public class InformaBanEventListener implements Listener {
 		
 		event.setKickMessage(StringUtils.join(message, '\n'));
 		event.setResult(Result.KICK_BANNED);
+		*/
 	}
 }

@@ -1,18 +1,20 @@
-package net.lethargiclion.informaban.enforcement;
+package net.lethargiclion.informaban.events;
 
 import java.net.UnknownHostException;
 import java.util.Date;
 
-import javax.persistence.MappedSuperclass;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@MappedSuperclass
+@Entity
 public abstract class TimedEnforcement extends Enforcement {
     
     private int duration;
     
+    @Transient
     private boolean active;
     
     protected TimedEnforcement() {
@@ -48,7 +50,7 @@ public abstract class TimedEnforcement extends Enforcement {
     /**
      * @param duration the duration to set
      */
-    protected void setDuration(int duration) {
+    public void setDuration(int duration) {
         this.duration = duration;
     }
 

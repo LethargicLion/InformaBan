@@ -1,21 +1,23 @@
-package net.lethargiclion.informaban.enforcement;
+package net.lethargiclion.informaban.events;
 
 import java.net.UnknownHostException;
+import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Table;
 
 import net.lethargiclion.informaban.InformaBan;
+
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @Entity()
-@Table(name="ib_events")
+@DiscriminatorValue("KICK")
 public class Kick extends Enforcement {
     
     public Kick() {}
@@ -42,6 +44,11 @@ public class Kick extends Enforcement {
         subject.kickPlayer(StringUtils.join(message, '\n'));
         
         return true;
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("%s kicked %s on %s: %s", getEnforcer(), getSubject(), DateFormat.getInstance().format(getDateIssued()), getReason());
     }
 
 }

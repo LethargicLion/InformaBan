@@ -136,7 +136,7 @@ public class InformaBan extends JavaPlugin {
 
     private void initDatabase() {
         try {
-            getDatabase().find(net.lethargiclion.informaban.persistence.Event.class).findRowCount();
+            getDatabase().find(net.lethargiclion.informaban.events.Enforcement.class).findRowCount();
         } catch(PersistenceException ex) {
             this.getLogger().info(messages.getString("plugin.enable.database"));
             
@@ -152,7 +152,10 @@ public class InformaBan extends JavaPlugin {
     @Override
     public List<Class<?>> getDatabaseClasses() {
         List<Class<?>> list = new ArrayList<Class<?>>();
-        list.add(net.lethargiclion.informaban.persistence.Event.class);
+        list.add(net.lethargiclion.informaban.events.Enforcement.class);
+        list.add(net.lethargiclion.informaban.events.TimedEnforcement.class);
+        list.add(net.lethargiclion.informaban.events.Ban.class);
+        list.add(net.lethargiclion.informaban.events.Kick.class);
         return list;
     }
 }
