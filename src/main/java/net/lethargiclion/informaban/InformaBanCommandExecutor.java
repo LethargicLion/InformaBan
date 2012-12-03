@@ -33,10 +33,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * InformaBan command executor class.
- * Processes commands.
+ * InformaBan command executor class. Processes commands.
+ * 
  * @author TerrorBite
- *
+ * 
  */
 public class InformaBanCommandExecutor implements CommandExecutor {
 
@@ -44,7 +44,9 @@ public class InformaBanCommandExecutor implements CommandExecutor {
 
     /**
      * Creates a new instance of this command executor.
-     * @param plugin The parent plugin instance.
+     * 
+     * @param plugin
+     *            The parent plugin instance.
      */
     public InformaBanCommandExecutor(InformaBan plugin) {
         this.plugin = plugin;
@@ -74,8 +76,11 @@ public class InformaBanCommandExecutor implements CommandExecutor {
 
     /**
      * Handles the /kick command.
-     * @param sender The CommandSender executing this command.
-     * @param args The command arguments.
+     * 
+     * @param sender
+     *            The CommandSender executing this command.
+     * @param args
+     *            The command arguments.
      * @return False if a usage message should be displayed.
      */
     private boolean commandKick(CommandSender sender, String[] args) {
@@ -99,7 +104,7 @@ public class InformaBanCommandExecutor implements CommandExecutor {
 
                 // Do the kick and record it
                 Kick k = new Kick();
-                k.enforce(plugin.messages, victim, sender, banReason);
+                k.apply(plugin.messages, victim, sender, banReason);
                 plugin.getDatabase().insert(k);
             } else
                 sender.sendMessage(plugin.messages
@@ -111,8 +116,11 @@ public class InformaBanCommandExecutor implements CommandExecutor {
 
     /**
      * Handles the /ban command.
-     * @param sender The CommandSender executing this command.
-     * @param args The command arguments.
+     * 
+     * @param sender
+     *            The CommandSender executing this command.
+     * @param args
+     *            The command arguments.
      * @return False if a usage message should be displayed.
      */
     private boolean commandBan(CommandSender sender, String[] args) {
@@ -136,7 +144,7 @@ public class InformaBanCommandExecutor implements CommandExecutor {
 
                 // Do the ban and record it
                 Ban b = new Ban();
-                b.enforce(plugin.messages, victim, sender, banReason,
+                b.apply(plugin.messages, victim, sender, banReason,
                         Ban.PERMANENT);
                 plugin.getDatabase().insert(b);
             } else
@@ -149,8 +157,11 @@ public class InformaBanCommandExecutor implements CommandExecutor {
 
     /**
      * Handles the /rap command.
-     * @param sender The CommandSender executing this command.
-     * @param args The command arguments.
+     * 
+     * @param sender
+     *            The CommandSender executing this command.
+     * @param args
+     *            The command arguments.
      * @return False if a usage message should be displayed.
      */
     private boolean commandRap(CommandSender sender, String[] args) {

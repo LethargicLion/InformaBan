@@ -1,9 +1,7 @@
 package net.lethargiclion.informaban.events;
 
-import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.MessageFormat;
-import java.util.Date;
 import java.util.ResourceBundle;
 
 import javax.persistence.DiscriminatorValue;
@@ -23,12 +21,7 @@ public class Kick extends Event {
     public Kick() {
     }
 
-    public Kick(String subject, String subjectIP, String issuer, String reason,
-            Date when) throws UnknownHostException {
-        super(subject, subjectIP, issuer, reason, when);
-    }
-
-    public boolean enforce(ResourceBundle messages, Player subject,
+    public boolean apply(ResourceBundle messages, Player subject,
             CommandSender enforcer, String reason) {
 
         // Don't do anything if it's already enforced
@@ -36,7 +29,7 @@ public class Kick extends Event {
             return false;
 
         // Record it
-        super.enforce(subject, enforcer, reason);
+        super.apply(subject, enforcer, reason);
 
         String[] message = new String[3];
         // Construct kick message

@@ -1,8 +1,6 @@
 package net.lethargiclion.informaban.events;
 
-import java.net.UnknownHostException;
 import java.text.DateFormat;
-import java.util.Date;
 import java.util.ResourceBundle;
 
 import javax.persistence.DiscriminatorValue;
@@ -18,11 +16,6 @@ import org.bukkit.entity.Player;
 public class Ban extends TimedEvent {
 
     public Ban() {
-    }
-
-    public Ban(String subject, String subjectIP, String issuer, String reason,
-            Date when, int duration) throws UnknownHostException {
-        super(subject, subjectIP, issuer, reason, when, duration);
     }
 
     /**
@@ -42,12 +35,12 @@ public class Ban extends TimedEvent {
      * @return true if successfully enforced; false if the ban has already been
      *         enforced.
      */
-    public boolean enforce(ResourceBundle messages, Player subject,
+    public boolean apply(ResourceBundle messages, Player subject,
             CommandSender enforcer, String reason, int duration) {
         if (this.getDateIssued() != null)
             return false;
 
-        super.enforce(subject, enforcer, reason, duration);
+        super.apply(subject, enforcer, reason, duration);
 
         // ResourceBundle messages = ResourceBundle.getBundle("Messages",
         // InformaBan.getLocale());

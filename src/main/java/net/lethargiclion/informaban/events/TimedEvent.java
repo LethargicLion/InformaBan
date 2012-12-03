@@ -1,6 +1,5 @@
 package net.lethargiclion.informaban.events;
 
-import java.net.UnknownHostException;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -25,15 +24,9 @@ public abstract class TimedEvent extends Event {
     protected TimedEvent() {
     }
 
-    protected TimedEvent(String subject, String subjectIP, String issuer,
-            String reason, Date when, int duration) throws UnknownHostException {
-        super(subject, subjectIP, issuer, reason, when);
-        setDuration(duration);
-    }
-
-    protected boolean enforce(Player subject, CommandSender enforcer,
+    protected boolean apply(Player subject, CommandSender issuer,
             String reason, int duration) {
-        if (!super.enforce(subject, enforcer, reason))
+        if (!super.apply(subject, issuer, reason))
             return false;
         setDuration(duration);
         return true;

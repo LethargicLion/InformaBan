@@ -25,33 +25,6 @@ import org.bukkit.entity.Player;
 @Table(name = "ib_events")
 public abstract class Event {
 
-    public enum RecordType {
-        /**
-         * This is a record of a user being kicked.
-         */
-        KICK,
-        /**
-         * This is a record of a user being banned.
-         */
-        BAN,
-        /**
-         * This is a record of a user being ip-banned.
-         */
-        IPBAN,
-        /**
-         * This is a record of a user being unbanned/pardoned.
-         */
-        UNBAN,
-        /**
-         * For future expansion. This is a record of a user being jailed.
-         */
-        JAIL,
-        /**
-         * This is a comment added manually regarding this user.
-         */
-        COMMENT;
-    }
-
     /**
      * A unique ID for this record (for the database)
      */
@@ -92,15 +65,6 @@ public abstract class Event {
      * Creates a "blank" Enforcement with no type.
      */
     protected Event() {
-    }
-
-    protected Event(String subject, String subjectIP, String issuer,
-            String reason, Date when) throws UnknownHostException {
-        this.setSubject(subject);
-        this.setSubjectIP(subjectIP);
-        this.setEnforcer(issuer);
-        this.setReason(reason);
-        this.setDateIssued(when);
     }
 
     /**
@@ -194,7 +158,7 @@ public abstract class Event {
     /**
      * Enforces this event upon the subject.
      */
-    protected boolean enforce(Player subject, CommandSender enforcer,
+    protected boolean apply(Player subject, CommandSender enforcer,
             String reason) {
         if (getDateIssued() != null)
             return false;
