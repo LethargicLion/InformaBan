@@ -72,7 +72,10 @@ public class InformaBan extends JavaPlugin {
         ebeans.add(net.lethargiclion.informaban.events.Event.class);
         ebeans.add(net.lethargiclion.informaban.events.TimedEvent.class);
         ebeans.add(net.lethargiclion.informaban.events.Ban.class);
+        ebeans.add(net.lethargiclion.informaban.events.Unban.class);
         ebeans.add(net.lethargiclion.informaban.events.Kick.class);
+        ebeans.add(net.lethargiclion.informaban.events.ActiveEvent.class);
+        ebeans.add(net.lethargiclion.informaban.events.ActiveBan.class);
     }
 
     /**
@@ -139,6 +142,14 @@ public class InformaBan extends JavaPlugin {
             ban.setUsage(messages.getString("command.ban.usage"));
         } else
             log.warning(msgFailed.format(new Object[] { "/ban" }));
+
+        PluginCommand unban = getCommand("unban");
+        if (unban != null) {
+            unban.setExecutor(commandExecutor);
+            unban.setDescription(messages.getString("command.unban.description"));
+            unban.setUsage(messages.getString("command.unban.usage"));
+        } else
+            log.warning(msgFailed.format(new Object[] { "/unban" }));
 
         PluginCommand rap = getCommand("rap");
         if (rap != null) {

@@ -22,9 +22,11 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import net.lethargiclion.informaban.events.ActiveBan;
 import net.lethargiclion.informaban.events.Ban;
 import net.lethargiclion.informaban.events.Event;
 import net.lethargiclion.informaban.events.Kick;
+import net.lethargiclion.informaban.events.Unban;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.Command;
@@ -64,6 +66,8 @@ public class InformaBanCommandExecutor implements CommandExecutor {
                 return commandRap(sender, args);
             if (command.getName().equalsIgnoreCase("ban"))
                 return commandBan(sender, args);
+            if (command.getName().equalsIgnoreCase("unban"))
+                return commandUnban(sender, args);
         } catch (java.util.MissingResourceException e) {
             sender.sendMessage(new String[] {
                     "[InformaBan] An internal error occured. Please file a bug report.",
@@ -146,7 +150,8 @@ public class InformaBanCommandExecutor implements CommandExecutor {
                 Ban b = new Ban();
                 b.apply(plugin.messages, victim, sender, banReason,
                         Ban.PERMANENT);
-                plugin.getDatabase().insert(b);
+                plugin.getDatabase().insert(b); // Record the banning event
+                plugin.getDatabase().insert(b.makeActiveEvent()); // Set the actual ban
             } else
                 sender.sendMessage(plugin.messages
                         .getString("error.playerNotFound"));
@@ -178,6 +183,48 @@ public class InformaBanCommandExecutor implements CommandExecutor {
             while (i.hasNext()) {
                 sender.sendMessage(i.next().toString());
             }
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Handles the /unban command.
+     * 
+     * @param sender
+     *            The CommandSender executing this command.
+     * @param args
+     *            The command arguments.
+     * @return False if a usage message should be displayed.
+     */
+    private boolean commandUnban(CommandSender sender, String[] args) {
+        if (args.length == 1)
+            sender.sendMessage(plugin.messages
+                    .getString("command.unban.reasonRequired"));
+        if (args.length > 1) {
+            String exconvict = args[0];
+            ActiveBan ab;
+            if ((ab=plugin.getDatabase().find(ActiveBan.class).where().ieq("subject", exconvict).findUnique()) != null) {
+                // Set up ban message
+                String unbanReason = StringUtils.join(
+                        Arrays.copyOfRange(args, 1, args.length), ' ');
+
+                // Log ban to console
+                plugin.getLogger().info(
+                        MessageFormat.format(
+                                plugin.messages
+                                        .getString("command.unban.consoleLog"),
+                                new Object[] { sender.getName(),
+                                        ab.getSubject() }));
+
+                // Do the unban and record it
+                Unban b = new Unban();
+                b.apply(ab, sender, unbanReason);
+                plugin.getDatabase().insert(b); // Record the unbanning event
+                plugin.getDatabase().delete(ab); // Remove the actual ban
+            } else
+                sender.sendMessage(plugin.messages
+                        .getString("error.playerNotBanned"));
             return true;
         }
         return false;

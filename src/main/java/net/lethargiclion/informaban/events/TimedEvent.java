@@ -19,7 +19,7 @@ public abstract class TimedEvent extends Event {
     private int duration;
 
     @Transient
-    private boolean active = true;
+    private transient boolean active = true;
 
     protected TimedEvent() {
     }
@@ -32,15 +32,44 @@ public abstract class TimedEvent extends Event {
         return true;
     }
 
+    /**
+     * Reverses the actions (if any) taken when apply() was called on the
+     * parent. Used for example to unjail a player.
+     */
+    public abstract void onExpire();
+
+    /**
+     * Gets the string that should be shown to the subject of this action,
+     * explaining the action's details.
+     */
+    public abstract String getMessage();
+
+    /**
+     * Creates an active event suitable for submitting to the database.
+     */
+    public abstract ActiveEvent makeActiveEvent();
+
     public boolean isActive() {
         if (this.duration == PERMANENT)
             return true;
         if (!this.active)
             return false;
-        Date ends = new Date(this.getDateIssued().getTime() + duration * 1000);
-        if (ends.before(new Date()))
+        if (getExpiryDate().before(new Date())) {
+            active = false;
             return false;
+        }
         return true;
+    }
+
+    /**
+     * Gets the expiry date of this timed event.
+     * 
+     * @return The expiry date, or <c>null</c> if permanent.
+     */
+    protected Date getExpiryDate() {
+        if (isPermanent())
+            return null;
+        return new Date(this.getDateIssued().getTime() + duration * 1000);
     }
 
     /**

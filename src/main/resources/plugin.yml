@@ -15,6 +15,9 @@ commands:
     ban:
         description: Bans a player from the server.
         usage: /ban <player> <time> <reason>
+    unban:
+        description: Unbans a player from the server.
+        usage: /unban <player> <reason>
     kick:
         description: Kicks a player from the server.
         usage: /kick <player> <reason>

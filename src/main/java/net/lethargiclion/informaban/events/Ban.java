@@ -70,7 +70,7 @@ public class Ban extends TimedEvent {
      * 
      * @return
      */
-    public String getBanMessage() {
+    public String getMessage() {
         String[] message = new String[3];
         String serverName = "this server";
 
@@ -78,7 +78,7 @@ public class Ban extends TimedEvent {
                 .format("%sYou are %sbanned from %s!", ChatColor.GOLD,
                         isPermanent() ? "PERMANENTLY " : "", serverName);
         message[1] = String.format("Reason: %s%s%s", ChatColor.GRAY,
-                ChatColor.ITALIC, this.getReason());
+                ChatColor.ITALIC, getReason());
         message[2] = String.format(
                 "%sYour ban (placed by %s%s%s) will %s.",
                 ChatColor.GRAY,
@@ -94,10 +94,28 @@ public class Ban extends TimedEvent {
 
     @Override
     public String toString() {
-        return String.format("%s banned %s on %s for %d seconds: %s",
+        return String.format("%s banned %s on %s for %d seconds: %s (IP: %s)",
                 getEnforcer(), getSubject(),
                 DateFormat.getInstance().format(getDateIssued()),
-                getDuration(), getReason());
+                getDuration(), getReason(), getSubjectIP());
+    }
+
+    @Override
+    /**
+     * Process actions to be taken when the user's ban has expired.
+     * Nothing to do here for a ban.
+     */
+    public void onExpire() {
+
+    }
+
+    @Override
+    public ActiveEvent makeActiveEvent() {
+        ActiveEvent ab = new ActiveBan();
+        ab.setParent(this);
+        ab.setSubject(getSubject());
+        ab.setExpiry(getExpiryDate());
+        return ab;
     }
 
 }

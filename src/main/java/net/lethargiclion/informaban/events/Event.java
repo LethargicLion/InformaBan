@@ -1,12 +1,19 @@
 package net.lethargiclion.informaban.events;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.UUID;
 
-import javax.persistence.*;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -43,15 +50,16 @@ public abstract class Event {
     /**
      * The date and time that the recorded event occurred.
      */
+    @Temporal(value = TemporalType.TIMESTAMP)
     private Date dateIssued = null;
     /**
      * The name of the player who is the subject of the recorded event.
      */
     private String subject = null;
     /**
-     * The IP address of the subject.
+     * The string representation of the IP address of the subject.
      */
-    private InetAddress subjectIP = null;
+    private String subjectIP = null;
     /**
      * The name of the player who enforced this event.
      */
@@ -62,7 +70,7 @@ public abstract class Event {
     private String reason = null;
 
     /**
-     * Creates a "blank" Enforcement with no type.
+     * Creates a "blank" Event. Required by Ebeans.
      */
     protected Event() {
     }
@@ -99,30 +107,18 @@ public abstract class Event {
     }
 
     /**
-     * @return The IP address of the subject.
+     * @return The string representation of the IP address of the subject.
      */
-    public InetAddress getSubjectIP() {
+    public String getSubjectIP() {
         return subjectIP;
     }
 
     /**
      * @param subjectIP
-     *            The IP address of the subject.
+     *            The string representation of the IP address of the subject.
      */
-    public void setSubjectIP(InetAddress subjectIP) {
+    public void setSubjectIP(String subjectIP) {
         this.subjectIP = subjectIP;
-    }
-
-    /**
-     * @param subjectIP
-     *            The string representation of the subject's IP, or the hostname
-     *            of the subject.
-     * @throws UnknownHostException
-     *             Thrown if the supplied string is not an IP address and is not
-     *             a hostname that resolves to an IP address.
-     */
-    public void setSubjectIP(String subjectIP) throws UnknownHostException {
-        this.subjectIP = InetAddress.getByName(subjectIP);
     }
 
     /**
@@ -148,15 +144,15 @@ public abstract class Event {
     }
 
     /**
-     * @param The
-     *            reason for enforcement.
+     * @param reason
+     *            The reason for enforcement.
      */
     public void setReason(String reason) {
         this.reason = reason;
     }
 
     /**
-     * Enforces this event upon the subject.
+     * Applies this event to an online subject.
      */
     protected boolean apply(Player subject, CommandSender enforcer,
             String reason) {
@@ -164,7 +160,21 @@ public abstract class Event {
             return false;
         setDateIssued(new Date());
         this.subject = subject.getName();
-        this.subjectIP = subject.getAddress().getAddress();
+        this.subjectIP = subject.getAddress().getAddress().getHostAddress();
+        this.enforcer = enforcer.getName();
+        this.reason = reason;
+        return true;
+    }
+    
+    /**
+     * Applies this event to an offline subject. No IP is recorded.
+     */
+    protected boolean apply(String subject, CommandSender enforcer,
+            String reason) {
+        if (getDateIssued() != null)
+            return false;
+        setDateIssued(new Date());
+        this.subject = subject;
         this.enforcer = enforcer.getName();
         this.reason = reason;
         return true;
@@ -172,7 +182,9 @@ public abstract class Event {
 
     @Override
     public String toString() {
-        return String.format("Placed by %s against %s on %s", getEnforcer(),
-                getSubject(), DateFormat.getInstance().format(getDateIssued()));
+        return String.format("Placed by %s against %s on %s (IP: %s)",
+                getEnforcer(), getSubject(),
+                DateFormat.getInstance().format(getDateIssued()),
+                getSubjectIP());
     }
 }

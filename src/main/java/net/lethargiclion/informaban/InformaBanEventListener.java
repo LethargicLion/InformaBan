@@ -20,7 +20,7 @@ package net.lethargiclion.informaban;
 import java.util.Iterator;
 import java.util.List;
 
-import net.lethargiclion.informaban.events.Ban;
+import net.lethargiclion.informaban.events.ActiveBan;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,10 +28,10 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 
 /**
- * InformaBan event listener class.
- * Processes events.
+ * InformaBan event listener class. Processes events.
+ * 
  * @author TerrorBite
- *
+ * 
  */
 public class InformaBanEventListener implements Listener {
 
@@ -39,7 +39,9 @@ public class InformaBanEventListener implements Listener {
 
     /**
      * Creates a new instance of this event listener.
-     * @param plugin The parent plugin
+     * 
+     * @param plugin
+     *            The parent plugin
      */
     public InformaBanEventListener(InformaBan plugin) {
         this.plugin = plugin;
@@ -47,7 +49,9 @@ public class InformaBanEventListener implements Listener {
 
     /**
      * Handles the player login event.
-     * @param event Event to process.
+     * 
+     * @param event
+     *            Event to process.
      */
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
@@ -67,20 +71,24 @@ public class InformaBanEventListener implements Listener {
 
     /**
      * Checks whether this player is banned, and modifies the event accordingly.
+     * 
      * @param event
      */
     private void checkBans(PlayerLoginEvent event) {
-        // TODO: Keep a separate table of active bans for efficiency
-        List<Ban> bans = plugin.getDatabase().find(Ban.class).where()
-                .eq("subject", event.getPlayer().getName()).findList();
-        Iterator<Ban> i = bans.iterator();
 
-        while (i.hasNext()) {
-            Ban b = i.next();
+        // Check for any ban record (player name or IP)
+        ActiveBan b = plugin.getDatabase().find(ActiveBan.class).where()
+                .disjunction().eq("subject", event.getPlayer().getName())
+                .eq("subject", event.getAddress().getHostAddress())
+                .findUnique();
+
+        if (b != null) {
             if (b.isActive()) {
-                event.setKickMessage(b.getBanMessage());
+                event.setKickMessage(b.getParent().getMessage());
                 event.setResult(Result.KICK_BANNED);
-                break;
+            } else {
+                // If expired, remove it from the database
+                plugin.getDatabase().delete(b);
             }
         }
 
