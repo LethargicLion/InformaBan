@@ -49,8 +49,8 @@ public class Kick extends Event {
 
     @Override
     public String toString() {
-        return String.format("%s kicked %s on %s: %s", getEnforcer(),
-                getSubject(), DateFormat.getInstance().format(getDateIssued()),
+        return String.format("%s: %s kicked %s: %s", DateFormat.getInstance()
+                .format(getDateIssued()), getEnforcer(), getSubject(),
                 getReason());
     }
 

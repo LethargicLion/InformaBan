@@ -94,10 +94,15 @@ public class Ban extends TimedEvent {
 
     @Override
     public String toString() {
-        return String.format("%s banned %s on %s for %d seconds: %s (IP: %s)",
-                getEnforcer(), getSubject(),
+        if(isPermanent()) return String.format("%s: %s permanently banned %s: %s",
                 DateFormat.getInstance().format(getDateIssued()),
-                getDuration(), getReason(), getSubjectIP());
+                getEnforcer(), getSubject(),
+                getDuration(), getReason());
+            
+        else return String.format("%s: %s banned %s for %d seconds: %s",
+                DateFormat.getInstance().format(getDateIssued()),
+                getEnforcer(), getSubject(),
+                getDuration(), getReason());
     }
 
     @Override

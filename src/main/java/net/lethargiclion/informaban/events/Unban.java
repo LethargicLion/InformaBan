@@ -1,5 +1,7 @@
 package net.lethargiclion.informaban.events;
 
+import java.text.DateFormat;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
@@ -23,6 +25,13 @@ public class Unban extends Event {
         super.apply(ban.subject, enforcer, reason);
 
         return true;
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("%s: %s unbanned %s: %s",
+                DateFormat.getInstance().format(getDateIssued()),
+                getEnforcer(), getSubject(), getReason());
     }
 
 }
