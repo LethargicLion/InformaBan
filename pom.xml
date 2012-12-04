@@ -4,7 +4,6 @@
 	<groupId>net.lethargiclion</groupId>
 	<artifactId>informaban</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.1-SNAPSHOT</version>
 	<name>InformaBan</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -69,4 +68,5 @@
 		<system>Jenkins</system>
 		<url>http://ci.lethargiclion.net/job/InformaBan/</url>
 	</ciManagement>
+	<version>1.0-R0.1</version>
 </project>
