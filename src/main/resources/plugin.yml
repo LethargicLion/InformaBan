@@ -36,16 +36,16 @@ commands:
         permission-message: You do not have permission to view rapsheets.
 
 permissions:
-	informaban.reload:
-		description: Gives permission to reload the plugin configuration.
-		default: op
-	informaban.ban:
-		description: Gives permission to ban players.
-		default: op
-	informaban.kick:
-		description: Gives permission to kick players.
-		default: op
-	informaban.rap:
-		description: Gives permission to view a player's rapsheet.
-		default: true
+    informaban.reload:
+        description: Gives permission to reload the plugin configuration.
+        default: op
+    informaban.ban:
+        description: Gives permission to ban players.
+        default: op
+    informaban.kick:
+        description: Gives permission to kick players.
+        default: op
+    informaban.rap:
+        description: Gives permission to view a player's rapsheet.
+        default: true
 
