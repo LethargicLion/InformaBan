@@ -68,5 +68,5 @@
 		<system>Jenkins</system>
 		<url>http://ci.lethargiclion.net/job/InformaBan/</url>
 	</ciManagement>
-	<version>1.0-R0.1</version>
+	<version>1.0-R0.2</version>
 </project>
