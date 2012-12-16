@@ -12,15 +12,40 @@ commands:
     ib:
         description: Allows access to core ${project.name} functions.
         usage: /ib reload
+        permission: informaban.reload
+        permission-message: You do not have permission to reload InformaBan.
     ban:
         description: Bans a player from the server.
         usage: /ban <player> <time> <reason>
+        permission: informaban.ban
+        permission-message: You do not have permission to ban players.
     unban:
         description: Unbans a player from the server.
         usage: /unban <player> <reason>
+        permission: informaban.ban
+        permission-message: You do not have permission to unban players.
     kick:
         description: Kicks a player from the server.
         usage: /kick <player> <reason>
+        permission: informaban.kick
+        permission-message: You do not have permission to kick players.
     rap:
         description: Displays a user's "rap sheet", showing their kick/ban history.
         usage: /rap <player>
+        permission: informaban.rap
+        permission-message: You do not have permission to view rapsheets.
+
+permissions:
+	informaban.reload:
+		description: Gives permission to reload the plugin configuration.
+		default: op
+	informaban.ban:
+		description: Gives permission to ban players.
+		default: op
+	informaban.kick:
+		description: Gives permission to kick players.
+		default: op
+	informaban.rap:
+		description: Gives permission to view a player's rapsheet.
+		default: true
+
