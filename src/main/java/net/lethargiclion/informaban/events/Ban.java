@@ -97,7 +97,7 @@ public class Ban extends TimedEvent {
         if(isPermanent()) return String.format("%s: %s permanently banned %s: %s",
                 DateFormat.getInstance().format(getDateIssued()),
                 getEnforcer(), getSubject(),
-                getDuration(), getReason());
+                getReason());
             
         else return String.format("%s: %s banned %s for %d seconds: %s",
                 DateFormat.getInstance().format(getDateIssued()),
