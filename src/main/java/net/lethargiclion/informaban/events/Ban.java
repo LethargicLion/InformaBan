@@ -60,6 +60,7 @@ public class Ban extends TimedEvent {
                 isPermanent() ? "NOT expire" : (String.format(
                         "expire in %d seconds", duration)));
 
+        subject.setBanned(true);
         subject.kickPlayer(StringUtils.join(message, '\n'));
         return true;
     }

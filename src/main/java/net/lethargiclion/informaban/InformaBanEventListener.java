@@ -17,9 +17,6 @@ package net.lethargiclion.informaban;
  along with InformaBan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.util.Iterator;
-import java.util.List;
-
 import net.lethargiclion.informaban.events.ActiveBan;
 
 import org.bukkit.event.EventHandler;
@@ -55,17 +52,17 @@ public class InformaBanEventListener implements Listener {
      */
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
-
-        try {
-            checkBans(event);
-        } catch (java.util.MissingResourceException e) {
-            plugin.getLogger()
-                    .severe("[InformaBan] An internal error occured. Please file a bug report.");
-            plugin.getLogger()
-                    .severe(String
-                            .format("[InformaBan] Error: No message defined for \"%s\".",
-                                    e.getKey()));
-        }
+        if(event.getResult() == Result.KICK_BANNED)
+            try {
+                checkBans(event);
+            } catch (java.util.MissingResourceException e) {
+                plugin.getLogger()
+                        .severe("[InformaBan] An internal error occured. Please file a bug report.");
+                plugin.getLogger()
+                        .severe(String
+                                .format("[InformaBan] Error: No message defined for \"%s\".",
+                                        e.getKey()));
+            }
 
     }
 
@@ -85,11 +82,17 @@ public class InformaBanEventListener implements Listener {
         if (b != null) {
             if (b.isActive()) {
                 event.setKickMessage(b.getParent().getMessage());
-                event.setResult(Result.KICK_BANNED);
             } else {
                 // If expired, remove it from the database
                 plugin.getDatabase().delete(b);
+                // and allow the player
+                event.getPlayer().setBanned(false);
+                event.setResult(Result.ALLOWED);
             }
+        }
+        else { // No record found
+            plugin.getLogger().warning(String.format("Player %s is banned, but is not in the database!",
+                    event.getPlayer().getName()));
         }
 
         return;
