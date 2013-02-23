@@ -21,6 +21,14 @@ public class Kick extends Event {
     public Kick() {
     }
 
+    /**
+     * Actually kick the player (and record it).
+     * @param messages The ResourceBundle containing localized strings.
+     * @param subject The player to be kicked.
+     * @param enforcer The player doing the kicking.
+     * @param reason The reason the subject is being kicked.
+     * @return true if successful.
+     */
     public boolean apply(ResourceBundle messages, Player subject,
             CommandSender enforcer, String reason) {
 
