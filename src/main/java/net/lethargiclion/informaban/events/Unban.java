@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 @Entity()
@@ -23,7 +24,9 @@ public class Unban extends Event {
 
         // Record details
         super.apply(ban.subject, enforcer, reason);
-
+        
+        // Record as unbanned - since banned player must be offline        
+        Bukkit.getOfflinePlayer(ban.subject).setBanned(false);
         return true;
     }
     
