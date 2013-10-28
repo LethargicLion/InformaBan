@@ -31,6 +31,14 @@ public abstract class TimedEvent extends Event {
         setDuration(duration);
         return true;
     }
+    
+    protected boolean apply(String subject, CommandSender issuer,
+            String reason, int duration) {
+        if (!super.apply(subject, issuer, reason)) {
+            return false;
+        }
+        return true;
+    }
 
     /**
      * Reverses the actions (if any) taken when apply() was called on the

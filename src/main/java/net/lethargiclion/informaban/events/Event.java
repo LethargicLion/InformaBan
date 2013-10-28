@@ -18,6 +18,8 @@ import javax.persistence.TemporalType;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.google.common.net.InetAddresses;
+
 /**
  * This base class represents a record of a ban, kick, jailing or other event
  * tracked by InformaBan.
@@ -167,13 +169,17 @@ public abstract class Event {
     }
     
     /**
-     * Applies this event to an offline subject. No IP is recorded.
+     * Applies this event to an offline subject. Accepts IP or player as subject.
      */
     protected boolean apply(String subject, CommandSender enforcer,
             String reason) {
         if (getDateIssued() != null)
             return false;
         setDateIssued(new Date());
+        if (InetAddresses.isInetAddress(subject)) {
+            this.subjectIP = subject;
+            
+        } 
         this.subject = subject;
         this.enforcer = enforcer.getName();
         this.reason = reason;
