@@ -19,6 +19,11 @@ commands:
         usage: /ban <player> <time> <reason>
         permission: informaban.ban
         permission-message: You do not have permission to ban players.
+    ipban:
+        description: Bans a player from the server.
+        usage: /ipban <player> <time> <reason>
+        permission: informaban.ban
+        permission-message: You do not have permission to ban players.
     unban:
         description: Unbans a player from the server.
         usage: /unban <player> <reason>

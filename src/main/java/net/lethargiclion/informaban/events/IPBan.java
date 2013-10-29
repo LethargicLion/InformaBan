@@ -1,6 +1,5 @@
 package net.lethargiclion.informaban.events;
 
-import java.net.InetAddress;
 import java.text.DateFormat;
 import java.util.ResourceBundle;
 
@@ -12,8 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import com.google.common.net.InetAddresses;
 
 @Entity()
 @DiscriminatorValue("IPBAN")
@@ -110,6 +107,8 @@ public class IPBan extends TimedEvent {
                 ChatColor.GRAY,
                 isPermanent() ? "NOT expire" : (String.format(
                         "expire in %d seconds", duration)));
+
+        Bukkit.banIP(subject);
 
         Player[] players = Bukkit.getOnlinePlayers();
         for (Player p: players) {
