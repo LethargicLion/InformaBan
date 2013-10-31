@@ -264,6 +264,7 @@ public class InformaBanCommandExecutor implements CommandExecutor {
                 if (ipaddress != null) {
                     List<Event> ipevents = plugin.getDatabase().find(Event.class).where()
                             .disjunction()
+                            .eq("subject", ipaddress)
                             .eq("subjectIP", ipaddress)
                             .findList();
 

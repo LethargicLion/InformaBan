@@ -111,7 +111,7 @@ public class IPBan extends TimedEvent {
 
         Player[] players = Bukkit.getOnlinePlayers();
         for (Player p: players) {
-            if (p.getAddress().getHostString().equals(subject)) {
+            if (p.getAddress().getAddress().getHostAddress().equals(subject)) {
                 p.kickPlayer(StringUtils.join(message, '\n'));
             }
         }

@@ -147,8 +147,8 @@ public class InformaBan extends JavaPlugin {
         PluginCommand ipban = getCommand("ipban");
         if (ipban != null) {
             ipban.setExecutor(commandExecutor);
-            ipban.setDescription(messages.getString("command.ban.description"));
-            ipban.setUsage(messages.getString("command.ban.usage"));
+            ipban.setDescription(messages.getString("command.ipban.description"));
+            ipban.setUsage(messages.getString("command.ipban.usage"));
         } else
             log.warning(msgFailed.format(new Object[] { "/ban" }));
 
