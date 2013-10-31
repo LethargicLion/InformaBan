@@ -61,11 +61,10 @@ public class IPBan extends TimedEvent {
                 isPermanent() ? "NOT expire" : (String.format(
                         "expire in %d seconds", duration)));
 
-        subject.setBanned(true);
         subject.kickPlayer(StringUtils.join(message, '\n'));
         return true;
     }
-    
+
     /**
      * Enforce this ban.
      * 
@@ -113,7 +112,6 @@ public class IPBan extends TimedEvent {
         Player[] players = Bukkit.getOnlinePlayers();
         for (Player p: players) {
             if (p.getAddress().getHostString().equals(subject)) {
-                p.setBanned(true);
                 p.kickPlayer(StringUtils.join(message, '\n'));
             }
         }
@@ -150,15 +148,17 @@ public class IPBan extends TimedEvent {
 
     @Override
     public String toString() {
-        if(isPermanent()) return String.format("%s: %s permanently banned %s: %s",
-                DateFormat.getInstance().format(getDateIssued()),
-                getEnforcer(), getSubject(),
-                getReason());
-            
-        else return String.format("%s: %s banned %s for %d seconds: %s",
-                DateFormat.getInstance().format(getDateIssued()),
-                getEnforcer(), getSubject(),
-                getDuration(), getReason());
+        if (isPermanent())
+            return String.format("%s: %s permanently banned %s: %s",
+                    DateFormat.getInstance().format(getDateIssued()),
+                    getEnforcer(), getSubject(),
+                    getReason());
+
+        else
+            return String.format("%s: %s banned %s for %d seconds: %s",
+                    DateFormat.getInstance().format(getDateIssued()),
+                    getEnforcer(), getSubject(),
+                    getDuration(), getReason());
     }
 
     @Override

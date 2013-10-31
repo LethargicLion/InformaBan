@@ -142,7 +142,7 @@ public class InformaBanCommandExecutor implements CommandExecutor {
                 // Set up ban message
                 String banReason = StringUtils.join(
                         Arrays.copyOfRange(args, 1, args.length), ' ');
-    
+
                 // Log ban to console
                 plugin.getLogger().info(
                         MessageFormat.format(
@@ -175,37 +175,36 @@ public class InformaBanCommandExecutor implements CommandExecutor {
      * @return False if a usage message should be displayed.
      */
     private boolean commandIPBan(CommandSender sender, String[] args) {
-        
-        
+
         if (args.length == 1)
             sender.sendMessage(plugin.messages
                     .getString("command.ban.reasonRequired"));
-        
+
         String subject = null;
-        
+
         if (args.length > 1) {
             if (InetAddresses.isInetAddress(args[0])) {
                 subject = args[0];
             } else {
-                subject = sender.getServer().getPlayer(args[0]).getAddress().getHostName();
+                subject = sender.getServer().getPlayer(args[0]).getAddress().getAddress().getHostAddress();
             }
-            
+
             // Check for existing IP ban
             ActiveBan ab = plugin.getDatabase().find(ActiveBan.class).where()
                     .eq("subject", subject)
                     .findUnique();
-            
+
             if (ab != null) {
                 sender.sendMessage(plugin.messages
                         .getString("error.IPAlreadyBanned"));
                 return true;
             }
-            
+
             if (subject != null) {
                 // Set up ban message
                 String banReason = StringUtils.join(
                         Arrays.copyOfRange(args, 1, args.length), ' ');
-                
+
                 // Log ban to console
                 plugin.getLogger().info(
                         MessageFormat.format(
@@ -213,7 +212,7 @@ public class InformaBanCommandExecutor implements CommandExecutor {
                                         .getString("command.ban.consoleLog"),
                                 new Object[] {sender.getName(),
                                         subject}));
-                
+
                 // Do the ban and record it
                 IPBan b = new IPBan();
                 b.apply(plugin.messages, subject, sender, banReason,
@@ -227,7 +226,7 @@ public class InformaBanCommandExecutor implements CommandExecutor {
         }
         return false;
     }
-    
+
     /**
      * Handles the /rap command.
      * 
@@ -247,15 +246,43 @@ public class InformaBanCommandExecutor implements CommandExecutor {
                 sender.sendMessage(MessageFormat.format(
                         plugin.messages.getString("command.rap.clean"), name));
             }
+            else {
+                sender.sendMessage(MessageFormat.format(
+                        plugin.messages.getString("command.rap.ban"), name));
+            }
             Iterator<Event> i = events.iterator();
             while (i.hasNext()) {
                 sender.sendMessage(i.next().toString());
+            }
+            
+            // Check for online player, and get bans matching IP address
+            Player p = plugin.getServer().getPlayer(name);
+
+            if (p != null) {
+                String ipaddress = p.getAddress().getAddress().getHostAddress();
+
+                if (ipaddress != null) {
+                    List<Event> ipevents = plugin.getDatabase().find(Event.class).where()
+                            .disjunction()
+                            .eq("subjectIP", ipaddress)
+                            .findList();
+
+                    if (!ipevents.isEmpty()) {
+                        sender.sendMessage(MessageFormat.format(
+                                plugin.messages.getString("command.rap.ip"), ipaddress));
+                    }
+                    Iterator<Event> j = ipevents.iterator();
+
+                    while (j.hasNext()) {
+                        sender.sendMessage(j.next().toString());
+                    }
+                }
             }
             return true;
         }
         return false;
     }
-    
+
     /**
      * Handles the /unban command.
      * 
