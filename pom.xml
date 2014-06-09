@@ -5,6 +5,7 @@
 	<artifactId>informaban</artifactId>
 	<packaging>jar</packaging>
 	<name>InformaBan</name>
+	<version>1.0-R0.3-SNAPSHOT</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<main.class>net.lethargiclion.informaban.InformaBan</main.class>
@@ -13,7 +14,7 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.6.4-R0.1-SNAPSHOT</version>
+			<version>1.7.9-R0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -49,7 +50,7 @@
 	</repositories>
 	<scm>
 		<tag>HEAD</tag>
-		<connection>scm:git:git://github.com/LethargicLion/InformaBan.git</connection>
+		<connection>scm:git:https://github.com/LethargicLion/InformaBan.git</connection>
 		<url>https://github.com/LethargicLion/InformaBan</url>
 		<developerConnection>scm:git:ssh://git@github.com:LethargicLion/InformaBan.git</developerConnection>
 	</scm>
@@ -68,5 +69,4 @@
 		<system>Jenkins</system>
 		<url>http://ci.lethargiclion.net/job/InformaBan/</url>
 	</ciManagement>
-	<version>1.0-R0.3-SNAPSHOT</version>
 </project>
