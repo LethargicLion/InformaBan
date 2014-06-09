@@ -1,6 +1,7 @@
 package net.lethargiclion.informaban.events;
 
 import java.util.Date;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.Transient;
@@ -32,9 +33,9 @@ public abstract class TimedEvent extends Event {
         return true;
     }
     
-    protected boolean apply(String subject, CommandSender issuer,
+    protected boolean apply(UUID subject, String subjectName, CommandSender issuer,
             String reason, int duration) {
-        if (!super.apply(subject, issuer, reason)) {
+        if (!super.apply(subject, subjectName, issuer, reason)) {
             return false;
         }
         return true;

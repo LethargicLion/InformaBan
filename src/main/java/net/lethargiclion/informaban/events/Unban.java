@@ -1,6 +1,7 @@
 package net.lethargiclion.informaban.events;
 
 import java.text.DateFormat;
+import java.util.UUID;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -16,7 +17,7 @@ public class Unban extends Event {
 
     public Unban() {}
 
-    public boolean apply(String subject,
+    public boolean apply(UUID subject, String subjectName,
             CommandSender enforcer, String reason) {
 
         // Don't do anything if it's already applied
@@ -24,10 +25,10 @@ public class Unban extends Event {
             return false;
 
         // Record details
-        super.apply(subject, enforcer, reason);
+        super.apply(subject, subjectName, enforcer, reason);
         
-        if (InetAddresses.isInetAddress(subject)) {
-            Bukkit.unbanIP(subject);
+        if (InetAddresses.isInetAddress(subjectName)) {
+            Bukkit.unbanIP(subjectName);
         } else {
             // Record as unbanned - since banned player must be offline
             // TODO: Eliminate getOfflinePlayer() call

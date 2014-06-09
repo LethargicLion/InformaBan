@@ -55,9 +55,13 @@ public abstract class Event {
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date dateIssued = null;
     /**
+     * The unique UUID of the player who is the subject of the recorded event.
+     */
+    private UUID subject = null;
+    /**
      * The name of the player who is the subject of the recorded event.
      */
-    private String subject = null;
+    private String subjectName = null;
     /**
      * The string representation of the IP address of the subject.
      */
@@ -95,16 +99,14 @@ public abstract class Event {
     /**
      * @return The name of the player who is the subject of the recorded event.
      */
-    public String getSubject() {
+    public UUID getSubject() {
         return subject;
     }
 
     /**
-     * @param subject
-     *            The name of the player who is the subject of the recorded
-     *            event.
+     * @param subject  The unique UUIS of the player who is the subject of the recorded event.
      */
-    public void setSubject(String subject) {
+    public void setSubject(UUID subject) {
         this.subject = subject;
     }
 
@@ -131,8 +133,7 @@ public abstract class Event {
     }
 
     /**
-     * @param issuer
-     *            The name of the player who enforced this event.
+     * @param issuer The name of the player who enforced this event.
      */
     public void setEnforcer(String issuer) {
         this.enforcer = issuer;
@@ -154,6 +155,20 @@ public abstract class Event {
     }
 
     /**
+     * @return the subjectUUID
+     */
+    public String getSubjectName() {
+        return subjectName;
+    }
+
+    /**
+     * @param subjectName The name of the player who is the subject of the recorded event.
+     */
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
+    }
+
+    /**
      * Applies this event to an online subject.
      */
     protected boolean apply(Player subject, CommandSender enforcer,
@@ -161,7 +176,7 @@ public abstract class Event {
         if (getDateIssued() != null)
             return false;
         setDateIssued(new Date());
-        this.subject = subject.getName();
+        this.subject = subject.getUniqueId();
         this.subjectIP = subject.getAddress().getAddress().getHostAddress();
         this.enforcer = enforcer.getName();
         this.reason = reason;
@@ -171,13 +186,13 @@ public abstract class Event {
     /**
      * Applies this event to an offline subject. Accepts IP or player as subject.
      */
-    protected boolean apply(String subject, CommandSender enforcer,
+    protected boolean apply(UUID subject, String subjectName, CommandSender enforcer,
             String reason) {
         if (getDateIssued() != null)
             return false;
         setDateIssued(new Date());
-        if (InetAddresses.isInetAddress(subject)) {
-            this.subjectIP = subject;
+        if (InetAddresses.isInetAddress(subjectName)) {
+            this.subjectIP = subjectName;
             
         } 
         this.subject = subject;

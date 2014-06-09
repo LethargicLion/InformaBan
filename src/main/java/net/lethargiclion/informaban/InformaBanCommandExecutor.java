@@ -21,6 +21,7 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import net.lethargiclion.informaban.events.Ban;
 import net.lethargiclion.informaban.events.Event;
@@ -181,14 +182,18 @@ public class InformaBanCommandExecutor implements CommandExecutor {
             sender.sendMessage(plugin.messages
                     .getString("command.ban.reasonRequired"));
 
-        String subject = null;
+        String subject = null, ip = null;
+        UUID uuid = null;
 
         if (args.length > 1) {
             if (InetAddresses.isInetAddress(args[0])) {
-                subject = args[0];
+                ip = subject = args[0];
             } else {
                 // Assume it is a player name and try to get their IP address
-                subject = sender.getServer().getPlayer(args[0]).getAddress().getAddress().getHostAddress();
+                Player p = sender.getServer().getPlayer(args[0]);
+                subject = p.getName();
+                uuid = p.getUniqueId();
+                ip = p.getAddress().getAddress().getHostAddress();
             }
 
             // Check for existing IP ban
@@ -212,8 +217,9 @@ public class InformaBanCommandExecutor implements CommandExecutor {
 
                 // Do the ban and record it
                 IPBan b = new IPBan();
-                b.apply(plugin.messages, subject, sender, banReason,
+                b.apply(plugin.messages, uuid, subject, sender, banReason,
                         Ban.PERMANENT);
+                b.setSubjectIP(ip);
                 plugin.getDatabase().insert(b); // Record the banning event
                 plugin.getDatabase().insert(b.makeActiveEvent()); // Set the actual ban
             } else
@@ -312,7 +318,7 @@ public class InformaBanCommandExecutor implements CommandExecutor {
 
                 // Do the unban and record it
                 Unban b = new Unban();
-                b.apply(exconvict.getName(), sender, unbanReason);
+                b.apply(exconvict.getUniqueId(), ban.getSubjectName(), sender, unbanReason);
                 plugin.getDatabase().insert(b); // Record the unbanning event
             } else
                 sender.sendMessage(plugin.messages

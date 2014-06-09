@@ -2,6 +2,7 @@ package net.lethargiclion.informaban.events;
 
 import java.text.DateFormat;
 import java.util.ResourceBundle;
+import java.util.UUID;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -82,12 +83,12 @@ public class IPBan extends TimedEvent {
      * @return true if successfully enforced; false if the ban has already been
      *         enforced.
      */
-    public boolean apply(ResourceBundle messages, String subject,
+    public boolean apply(ResourceBundle messages, UUID subject, String subjectName,
             CommandSender enforcer, String reason, int duration) {
         if (this.getDateIssued() != null)
             return false;
 
-        super.apply(subject, enforcer, reason, duration);
+        super.apply(subject, subjectName, enforcer, reason, duration);
 
         // ResourceBundle messages = ResourceBundle.getBundle("Messages",
         // InformaBan.getLocale());
@@ -107,7 +108,7 @@ public class IPBan extends TimedEvent {
                 isPermanent() ? "NOT expire" : (String.format(
                         "expire in %d seconds", duration)));
 
-        Bukkit.banIP(subject);
+        Bukkit.banIP(subjectName);
 
         Player[] players = Bukkit.getOnlinePlayers();
         for (Player p: players) {
