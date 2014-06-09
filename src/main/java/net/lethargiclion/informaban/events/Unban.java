@@ -16,7 +16,7 @@ public class Unban extends Event {
 
     public Unban() {}
 
-    public boolean apply(ActiveBan ban,
+    public boolean apply(String subject,
             CommandSender enforcer, String reason) {
 
         // Don't do anything if it's already applied
@@ -24,13 +24,14 @@ public class Unban extends Event {
             return false;
 
         // Record details
-        super.apply(ban.subject, enforcer, reason);
+        super.apply(subject, enforcer, reason);
         
-        if (InetAddresses.isInetAddress(ban.subject)) {
-            Bukkit.unbanIP(ban.subject);
+        if (InetAddresses.isInetAddress(subject)) {
+            Bukkit.unbanIP(subject);
         } else {
-            // Record as unbanned - since banned player must be offline        
-            Bukkit.getOfflinePlayer(ban.subject).setBanned(false);
+            // Record as unbanned - since banned player must be offline
+            // TODO: Eliminate getOfflinePlayer() call
+            Bukkit.getOfflinePlayer(subject).setBanned(false);
         }
         return true;
     }

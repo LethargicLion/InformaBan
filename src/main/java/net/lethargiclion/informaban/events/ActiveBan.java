@@ -7,9 +7,12 @@ import javax.persistence.Entity;
 @DiscriminatorValue("BAN")
 /**
  * Represents a currently-active ban.
+ * 
+ * Deprecated: The built-in ban system is now used to check for ongoing bans.
  * @author TerrorBite
  *
  */
+@Deprecated
 public class ActiveBan extends ActiveEvent {
     
     public ActiveBan() {

@@ -17,7 +17,7 @@ package net.lethargiclion.informaban;
  along with InformaBan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import net.lethargiclion.informaban.events.ActiveBan;
+import net.lethargiclion.informaban.events.Ban;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -46,6 +46,13 @@ public class InformaBanEventListener implements Listener {
 
     /**
      * Handles the player login event.
+     * InformaBan relies on the vanilla ban mechanic to actually ban a player,
+     * so that we don't have to rewrite that functionality. This also makes InformaBan
+     * mostly compatible with other plugins that utilise this functionality!
+     * When a banned player logs in, a PlayerLoginEvent with the KICK_BANNED result
+     * is fired. InformaBan detects this, looks up the player in the ban database,
+     * and sets the kick message to a more informative one. Or if it is a temporary
+     * ban that has expired, InformaBan unbans then and allows the login event.
      * 
      * @param event
      *            Event to process.
@@ -74,7 +81,7 @@ public class InformaBanEventListener implements Listener {
     private void checkBans(PlayerLoginEvent event) {
 
         // Check for any ban record (player name or IP)
-        ActiveBan b = plugin.getDatabase().find(ActiveBan.class).where()
+        Ban b = plugin.getDatabase().find(Ban.class).where()
                 .disjunction().eq("subject", event.getPlayer().getName())
                 .eq("subject", event.getAddress().getHostAddress())
                 .findUnique();
@@ -82,17 +89,18 @@ public class InformaBanEventListener implements Listener {
 
         if (b != null) {
             if (b.isActive()) {
-                event.setKickMessage(b.getParent().getMessage());
+                event.setKickMessage(b.getMessage());
             } else {
                 // If expired, remove it from the database
                 plugin.getDatabase().delete(b);
                 // and allow the player
                 event.getPlayer().setBanned(false);
                 event.setResult(Result.ALLOWED);
+                event.getPlayer().sendMessage("[InformaBan] Your ban has expired. Welcome back!");
             }
         }
         else { // No record found
-            plugin.getLogger().warning(String.format("Player %s is banned, but is not in the database!",
+            plugin.getLogger().warning(String.format("Player %s is banned, but there is no record of the ban!",
                     event.getPlayer().getName()));
         }
 

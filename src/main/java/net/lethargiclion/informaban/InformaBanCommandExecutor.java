@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import net.lethargiclion.informaban.events.ActiveBan;
 import net.lethargiclion.informaban.events.Ban;
 import net.lethargiclion.informaban.events.Event;
 import net.lethargiclion.informaban.events.IPBan;
@@ -30,6 +29,8 @@ import net.lethargiclion.informaban.events.Kick;
 import net.lethargiclion.informaban.events.Unban;
 
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -186,17 +187,13 @@ public class InformaBanCommandExecutor implements CommandExecutor {
             if (InetAddresses.isInetAddress(args[0])) {
                 subject = args[0];
             } else {
+                // Assume it is a player name and try to get their IP address
                 subject = sender.getServer().getPlayer(args[0]).getAddress().getAddress().getHostAddress();
             }
 
             // Check for existing IP ban
-            ActiveBan ab = plugin.getDatabase().find(ActiveBan.class).where()
-                    .eq("subject", subject)
-                    .findUnique();
-
-            if (ab != null) {
-                sender.sendMessage(plugin.messages
-                        .getString("error.IPAlreadyBanned"));
+            if(Bukkit.getIPBans().contains(subject)) {
+                sender.sendMessage(plugin.messages.getString("error.IPAlreadyBanned"));
                 return true;
             }
 
@@ -298,26 +295,25 @@ public class InformaBanCommandExecutor implements CommandExecutor {
             sender.sendMessage(plugin.messages
                     .getString("command.unban.reasonRequired"));
         if (args.length > 1) {
-            String exconvict = args[0];
-            ActiveBan ab;
-            if ((ab=plugin.getDatabase().find(ActiveBan.class).where().ieq("subject", exconvict).findUnique()) != null) {
-                // Set up ban message
+            OfflinePlayer exconvict = Bukkit.getOfflinePlayer(args[0]);
+            Ban ban;
+            if ((ban=plugin.getDatabase().find(Ban.class).where().ieq("subject", exconvict.getName()).findUnique()) != null) {
+                // Set up unban reason message
                 String unbanReason = StringUtils.join(
                         Arrays.copyOfRange(args, 1, args.length), ' ');
 
-                // Log ban to console
+                // Log unban to console
                 plugin.getLogger().info(
                         MessageFormat.format(
                                 plugin.messages
                                         .getString("command.unban.consoleLog"),
                                 new Object[] {sender.getName(),
-                                        ab.getSubject()}));
+                                        ban.getSubject()}));
 
                 // Do the unban and record it
                 Unban b = new Unban();
-                b.apply(ab, sender, unbanReason);
+                b.apply(exconvict.getName(), sender, unbanReason);
                 plugin.getDatabase().insert(b); // Record the unbanning event
-                plugin.getDatabase().delete(ab); // Remove the actual ban
             } else
                 sender.sendMessage(plugin.messages
                         .getString("error.playerNotBanned"));

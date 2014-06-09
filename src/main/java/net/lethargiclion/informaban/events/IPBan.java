@@ -172,11 +172,7 @@ public class IPBan extends TimedEvent {
 
     @Override
     public ActiveEvent makeActiveEvent() {
-        ActiveEvent ab = new ActiveBan();
-        ab.setParent(this);
-        ab.setSubject(getSubject());
-        ab.setExpiry(getExpiryDate());
-        return ab;
+        return null;
     }
 
 }

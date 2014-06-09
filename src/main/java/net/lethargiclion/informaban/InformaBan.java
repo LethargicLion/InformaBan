@@ -67,6 +67,7 @@ public class InformaBan extends JavaPlugin {
     /**
      * Generate list of database classes for getDatabaseClasses()
      */
+    @SuppressWarnings("deprecation")
     private void createDBClassList() {
         ebeans = new ArrayList<Class<?>>();
         ebeans.add(net.lethargiclion.informaban.events.Event.class);

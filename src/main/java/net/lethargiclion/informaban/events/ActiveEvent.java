@@ -17,8 +17,11 @@ import javax.persistence.TemporalType;
 import com.avaje.ebean.validation.NotNull;
 
 /**
- * Represents an ongoing event such as a ban or a jailing. References a record
- * of an event taking place.
+ * Represents an ongoing non-ban event such as a jailing. Contains a reference to
+ * the actual record of the event (which will be an Event).
+ * 
+ * NOTE: Ongoing bans are recorded using Bukkit's built-in ban system. ActiveEvent
+ * is used used for ongoing events that have no standard system in place (jails, etc).
  * 
  * @author TerrorBite
  * 
