@@ -18,11 +18,15 @@ package net.lethargiclion.informaban;
  */
 
 import net.lethargiclion.informaban.events.Ban;
+import net.lethargiclion.informaban.events.IPBan;
 
+import org.bukkit.BanList;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
+
+import com.google.common.net.InetAddresses;
 
 /**
  * InformaBan event listener class. Processes events.
@@ -85,21 +89,31 @@ public class InformaBanEventListener implements Listener {
                 .disjunction().eq("subject", event.getPlayer().getName())
                 .eq("subject", event.getAddress().getHostAddress())
                 .findUnique();
-
-
         if (b != null) {
             if (b.isActive()) {
                 event.setKickMessage(b.getMessage());
             } else {
-                // If expired, remove it from the database
-                plugin.getDatabase().delete(b);
-                // and allow the player
-                event.getPlayer().setBanned(false);
+                // If expired, allow the player
+                plugin.getServer().getBanList(BanList.Type.NAME).pardon(event.getPlayer().getName());
                 event.setResult(Result.ALLOWED);
-                event.getPlayer().sendMessage("[InformaBan] Your ban has expired. Welcome back!");
+                //event.getPlayer().sendMessage("[InformaBan] Your ban has expired. Welcome back!");
             }
         }
         else { // No record found
+            IPBan ib = plugin.getDatabase().find(IPBan.class).where()
+                    .disjunction().eq("subject", event.getPlayer().getName())
+                    .eq("subject", event.getAddress().getHostAddress())
+                    .findUnique();
+            if(ib != null) {
+                if (ib.isActive()) {
+                    event.setKickMessage(ib.getMessage());
+                } else {
+                    // If expired, allow the player
+                    plugin.getServer().getBanList(BanList.Type.IP).pardon(event.getPlayer().getName());
+                    event.setResult(Result.ALLOWED);
+                    //event.getPlayer().sendMessage("[InformaBan] Your ban has expired. Welcome back!");
+                }
+            }
             plugin.getLogger().warning(String.format("Player %s is banned, but there is no record of the ban!",
                     event.getPlayer().getName()));
         }
