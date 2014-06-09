@@ -98,9 +98,9 @@ public class InformaBan extends JavaPlugin {
     }
 
     public void onDisable() {
-        // add any code you want to be executed when your plugin is disabled
         Logger log = this.getLogger();
 
+        // Log successful disable
         MessageFormat disableSuccess = new MessageFormat(
                 messages.getString("plugin.disable.success"), locale);
         log.info(disableSuccess.format(new Object[] { this.getName() }));
@@ -115,6 +115,7 @@ public class InformaBan extends JavaPlugin {
         MessageFormat msgFailed = new MessageFormat(
                 messages.getString("plugin.enable.commandFailure"), locale);
 
+        // Attempt to register commands
         PluginCommand ib = getCommand("ib");
         if (ib != null) {
             ib.setExecutor(commandExecutor);
@@ -172,14 +173,19 @@ public class InformaBan extends JavaPlugin {
         log.info(enableSuccess.format(new Object[] { this.getName() }));
     }
 
+    /**
+     * Handles initialization of the ebeans database for this plugin.
+     */
     private void initDatabase() {
         try {
+            // Attempt a sample database query. If this fails, we need to initialize our database.
             getDatabase().find(net.lethargiclion.informaban.events.Event.class)
                     .findRowCount();
         } catch (PersistenceException ex) {
+            // Database needs init
             this.getLogger().info(messages.getString("plugin.enable.database"));
 
-            // Set up tables and stuff
+            // Call base class installDDL() method to init database.
             installDDL();
         }
 
