@@ -79,6 +79,7 @@ public class InformaBanEventListener implements Listener {
                 .eq("subject", event.getAddress().getHostAddress())
                 .findUnique();
 
+
         if (b != null) {
             if (b.isActive()) {
                 event.setKickMessage(b.getParent().getMessage());

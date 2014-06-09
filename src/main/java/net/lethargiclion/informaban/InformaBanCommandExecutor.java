@@ -25,6 +25,7 @@ import java.util.List;
 import net.lethargiclion.informaban.events.ActiveBan;
 import net.lethargiclion.informaban.events.Ban;
 import net.lethargiclion.informaban.events.Event;
+import net.lethargiclion.informaban.events.IPBan;
 import net.lethargiclion.informaban.events.Kick;
 import net.lethargiclion.informaban.events.Unban;
 
@@ -33,6 +34,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import com.google.common.net.InetAddresses;
 
 /**
  * InformaBan command executor class. Processes commands.
@@ -66,6 +69,8 @@ public class InformaBanCommandExecutor implements CommandExecutor {
                 return commandRap(sender, args);
             if (command.getName().equalsIgnoreCase("ban"))
                 return commandBan(sender, args);
+            if (command.getName().equalsIgnoreCase("ipban"))
+                return commandIPBan(sender, args);
             if (command.getName().equalsIgnoreCase("unban"))
                 return commandUnban(sender, args);
         } catch (java.util.MissingResourceException e) {
@@ -103,8 +108,8 @@ public class InformaBanCommandExecutor implements CommandExecutor {
                         MessageFormat.format(
                                 plugin.messages
                                         .getString("command.kick.consoleLog"),
-                                new Object[] { sender.getName(),
-                                        victim.getName() }));
+                                new Object[] {sender.getName(),
+                                        victim.getName()}));
 
                 // Do the kick and record it
                 Kick k = new Kick();
@@ -143,12 +148,74 @@ public class InformaBanCommandExecutor implements CommandExecutor {
                         MessageFormat.format(
                                 plugin.messages
                                         .getString("command.ban.consoleLog"),
-                                new Object[] { sender.getName(),
-                                        victim.getName() }));
+                                new Object[] {sender.getName(),
+                                        victim.getName()}));
 
                 // Do the ban and record it
                 Ban b = new Ban();
                 b.apply(plugin.messages, victim, sender, banReason,
+                        Ban.PERMANENT);
+                plugin.getDatabase().insert(b); // Record the banning event
+                plugin.getDatabase().insert(b.makeActiveEvent()); // Set the actual ban
+            } else
+                sender.sendMessage(plugin.messages
+                        .getString("error.playerNotFound"));
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Handles the /ipban command.
+     * 
+     * @param sender
+     *            The CommandSender executing this command.
+     * @param args
+     *            The command arguments.
+     * @return False if a usage message should be displayed.
+     */
+    private boolean commandIPBan(CommandSender sender, String[] args) {
+
+        if (args.length == 1)
+            sender.sendMessage(plugin.messages
+                    .getString("command.ban.reasonRequired"));
+
+        String subject = null;
+
+        if (args.length > 1) {
+            if (InetAddresses.isInetAddress(args[0])) {
+                subject = args[0];
+            } else {
+                subject = sender.getServer().getPlayer(args[0]).getAddress().getAddress().getHostAddress();
+            }
+
+            // Check for existing IP ban
+            ActiveBan ab = plugin.getDatabase().find(ActiveBan.class).where()
+                    .eq("subject", subject)
+                    .findUnique();
+
+            if (ab != null) {
+                sender.sendMessage(plugin.messages
+                        .getString("error.IPAlreadyBanned"));
+                return true;
+            }
+
+            if (subject != null) {
+                // Set up ban message
+                String banReason = StringUtils.join(
+                        Arrays.copyOfRange(args, 1, args.length), ' ');
+
+                // Log ban to console
+                plugin.getLogger().info(
+                        MessageFormat.format(
+                                plugin.messages
+                                        .getString("command.ban.consoleLog"),
+                                new Object[] {sender.getName(),
+                                        subject}));
+
+                // Do the ban and record it
+                IPBan b = new IPBan();
+                b.apply(plugin.messages, subject, sender, banReason,
                         Ban.PERMANENT);
                 plugin.getDatabase().insert(b); // Record the banning event
                 plugin.getDatabase().insert(b.makeActiveEvent()); // Set the actual ban
@@ -179,15 +246,44 @@ public class InformaBanCommandExecutor implements CommandExecutor {
                 sender.sendMessage(MessageFormat.format(
                         plugin.messages.getString("command.rap.clean"), name));
             }
+            else {
+                sender.sendMessage(MessageFormat.format(
+                        plugin.messages.getString("command.rap.ban"), name));
+            }
             Iterator<Event> i = events.iterator();
             while (i.hasNext()) {
                 sender.sendMessage(i.next().toString());
+            }
+            
+            // Check for online player, and get bans matching IP address
+            Player p = plugin.getServer().getPlayer(name);
+
+            if (p != null) {
+                String ipaddress = p.getAddress().getAddress().getHostAddress();
+
+                if (ipaddress != null) {
+                    List<Event> ipevents = plugin.getDatabase().find(Event.class).where()
+                            .disjunction()
+                            .eq("subject", ipaddress)
+                            .eq("subjectIP", ipaddress)
+                            .findList();
+
+                    if (!ipevents.isEmpty()) {
+                        sender.sendMessage(MessageFormat.format(
+                                plugin.messages.getString("command.rap.ip"), ipaddress));
+                    }
+                    Iterator<Event> j = ipevents.iterator();
+
+                    while (j.hasNext()) {
+                        sender.sendMessage(j.next().toString());
+                    }
+                }
             }
             return true;
         }
         return false;
     }
-    
+
     /**
      * Handles the /unban command.
      * 
@@ -214,8 +310,8 @@ public class InformaBanCommandExecutor implements CommandExecutor {
                         MessageFormat.format(
                                 plugin.messages
                                         .getString("command.unban.consoleLog"),
-                                new Object[] { sender.getName(),
-                                        ab.getSubject() }));
+                                new Object[] {sender.getName(),
+                                        ab.getSubject()}));
 
                 // Do the unban and record it
                 Unban b = new Unban();
